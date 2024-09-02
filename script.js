@@ -14,6 +14,25 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     };
 });
 
+document.getElementById('applyButton').addEventListener('click', function() {
+    applyCustomStyles();
+});
+
+function applyCustomStyles() {
+    // テーブル全体のサイズを指定
+    const table = document.querySelector('table');
+    table.style.width = '500px';  // テーブル全体の幅を設定
+    table.style.height = '300px'; // テーブル全体の高さを設定
+    table.style.tableLayout = 'fixed'; // 固定レイアウトを適用
+
+    // セルのサイズを指定
+    const cells = document.querySelectorAll('th, td');
+    cells.forEach(cell => {
+        cell.style.width = '100px'; // 各セルの幅を100pxに設定
+        cell.style.height = '50px'; // 各セルの高さを50pxに設定
+    });
+}
+
 document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
 });
