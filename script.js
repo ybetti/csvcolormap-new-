@@ -21,15 +21,15 @@ document.getElementById('applyButton').addEventListener('click', function() {
 function applyCustomStyles() {
     // テーブル全体のサイズを指定
     const table = document.querySelector('table');
-    table.style.width = '500px';  // テーブル全体の幅を設定
-    table.style.height = '300px'; // テーブル全体の高さを設定
+    table.style.width = '50px';  // テーブル全体の幅を設定
+    table.style.height = '30px'; // テーブル全体の高さを設定
     table.style.tableLayout = 'fixed'; // 固定レイアウトを適用
 
     // セルのサイズを指定
     const cells = document.querySelectorAll('th, td');
     cells.forEach(cell => {
-        cell.style.width = '100px'; // 各セルの幅を100pxに設定
-        cell.style.height = '50px'; // 各セルの高さを50pxに設定
+        cell.style.width = '10px'; // 各セルの幅を100pxに設定
+        cell.style.height = '5px'; // 各セルの高さを50pxに設定
     });
 }
 
