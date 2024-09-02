@@ -127,13 +127,13 @@ function applyCustomStyles() {
     const table = document.querySelector('table');
     if (!table) return;
     
-    table.style.width = '500px';
-    table.style.height = '300px';
+    table.style.width = '50px';
+    table.style.height = '30px';
     table.style.tableLayout = 'fixed';
 
     const cells = document.querySelectorAll('th, td');
     cells.forEach(cell => {
-        cell.style.width = '100px';
-        cell.style.height = '50px';
+        cell.style.width = '10px';
+        cell.style.height = '5px';
     });
 }
