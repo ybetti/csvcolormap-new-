@@ -133,7 +133,7 @@ function applyCustomStyles() {
 
     const cells = document.querySelectorAll('th, td');
     cells.forEach(cell => {
-        cell.style.width = '10px';
-        cell.style.height = '5px';
+        cell.style.width = '8px';
+        cell.style.height = '4px';
     });
 }
