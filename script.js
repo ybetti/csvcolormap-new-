@@ -127,8 +127,8 @@ function applyCustomStyles() {
     const table = document.querySelector('table');
     if (!table) return;
     
-    table.style.width = '10px';
-    table.style.height = '7px';
+    table.style.width = '6px';
+    table.style.height = '4px';
     table.style.tableLayout = 'fixed';
 
     const cells = document.querySelectorAll('th, td');
