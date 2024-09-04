@@ -1,14 +1,17 @@
 table {
     width: 100%;
-    table-layout: fixed; /* テーブルの幅を均等にする */
+    table-layout: fixed;
+    transform-origin: top left; /* 縮小の起点を左上に設定 */
 }
 
 th, td {
     width: auto;
     overflow: hidden;
-    text-overflow: ellipsis; /* テキストがセルに収まらない場合に省略記号を表示 */
-    white-space: nowrap; /* テキストを改行しない */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10px; /* 文字サイズも縮小 */
 }
+
 
 
 .color-input {
