@@ -2,15 +2,25 @@ let globalData = null;
 let autoMinValue = Number.POSITIVE_INFINITY;
 let autoMaxValue = Number.NEGATIVE_INFINITY;
 
-document.getElementById('fileInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsText(file);
+document.getElementById('fullscreenButton').addEventListener('click', function() {
+    toggleFullScreen();
+});
 
-    reader.onload = function() {
-        globalData = reader.result;
-        calculateMinMax();
-        updateColorMap();
+function toggleFullScreen() {
+    const colorMapContainer = document.getElementById('colorMapContainer');
+    const isFullScreen = colorMapContainer.classList.toggle('fullscreen-table');
+
+    if (isFullScreen) {
+        // 全体図を表示
+        colorMapContainer.style.maxHeight = 'none';
+        colorMapContainer.style.overflow = 'visible';
+    } else {
+        // 元のサイズに戻す
+        colorMapContainer.style.maxHeight = '400px';
+        colorMapContainer.style.overflow = 'auto';
+    }
+}
+
     };
 });
 
