@@ -30,7 +30,22 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     const newWindow = window.open('', '', 'width=800,height=600');
 
     // 新しいウィンドウにHTMLを追加
-    newWindow.document.write('<html><head><title>全体図</title><style> .highlight { position: relative; box-shadow: 0 0 0 4px red; border-radius: 50%; z-index: 10; } </style></head><body></body></html>');
+    newWindow.document.write(`
+        <html>
+        <head>
+            <title>全体図</title>
+            <style>
+                .highlight {
+                    position: relative;
+                    box-shadow: 0 0 0 4px red;
+                    border-radius: 50%;
+                    z-index: 10;
+                }
+            </style>
+        </head>
+        <body></body>
+        </html>
+    `);
 
     const colorMapContainer = newWindow.document.body;
     const colorMapElement = document.getElementById('colorMap');
@@ -57,8 +72,15 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     });
 
     // テーブルの縮小（10分の1）
-    table.style.transform = 'scale(0.1)';
+    const scale = 0.1;
+    table.style.transform = `scale(${scale})`;
     table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
+
+    // 最小値セルのボックスシャドウをリサイズ
+    const minCells = table.querySelectorAll('.highlight');
+    minCells.forEach(cell => {
+        cell.style.boxShadow = `${4 * scale}px ${4 * scale}px 0 ${4 * scale}px red`;
+    });
 
     // スクロール可能にする
     colorMapContainer.style.overflow = 'auto';
@@ -66,6 +88,7 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     // 必要に応じて追加のスタイルを設定
     newWindow.document.close(); // 新しいウィンドウの書き込みを終了
 });
+
 
 function calculateMinMax() {
     if (!globalData) return;
