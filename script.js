@@ -150,19 +150,4 @@ function getColorForValue(value, min, max) {
         }
         return colors[colors.length - 1];
     }
-    document.getElementById('fullscreenButton').addEventListener('click', function() {
-    const newWindow = window.open('', '', 'width=800,height=600');
-    
-    newWindow.document.write('<html><head><title>全体図</title><style>table { transform: scale(1); transform-origin: top left; } </style></head><body><table></table></body></html>');
-    
-    const newTable = newWindow.document.querySelector('table');
-    newTable.classList.add('zoomed-table');
-    
-    const table = document.querySelector('table');
-    
-    newTable.innerHTML = table.innerHTML;
-    
-    newWindow.document.close();
-});
-
 }
