@@ -14,6 +14,26 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     };
 });
 
+document.getElementById('fullscreenButton').addEventListener('click', function() {
+    const colorMapContainer = document.getElementById('colorMapContainer');
+    const table = document.querySelector('table');
+
+    // コンテナの設定
+    colorMapContainer.style.position = 'fixed';
+    colorMapContainer.style.top = '0';
+    colorMapContainer.style.left = '0';
+    colorMapContainer.style.width = '100%';
+    colorMapContainer.style.height = '100%';
+    colorMapContainer.style.zIndex = '1000';
+    colorMapContainer.style.backgroundColor = 'white';
+    colorMapContainer.style.overflow = 'scroll';
+
+    // テーブルの縮小（10分の1）
+    table.style.transform = 'scale(0.1)';
+    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
+});
+
+
 document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
 });
