@@ -16,3 +16,7 @@ table, th, td {
     padding: 3px 6px;
     margin: 3px;
 }
+
+.small-font-cell {
+    font-size: 12px; /* 文字の大きさを指定 */
+}
