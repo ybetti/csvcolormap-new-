@@ -2,25 +2,15 @@ let globalData = null;
 let autoMinValue = Number.POSITIVE_INFINITY;
 let autoMaxValue = Number.NEGATIVE_INFINITY;
 
-document.getElementById('fullscreenButton').addEventListener('click', function() {
-    toggleFullScreen();
-});
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsText(file);
 
-function toggleFullScreen() {
-    const colorMapContainer = document.getElementById('colorMapContainer');
-    const isFullScreen = colorMapContainer.classList.toggle('fullscreen-table');
-
-    if (isFullScreen) {
-        // 全体図を表示
-        colorMapContainer.style.maxHeight = 'none';
-        colorMapContainer.style.overflow = 'visible';
-    } else {
-        // 元のサイズに戻す
-        colorMapContainer.style.maxHeight = '400px';
-        colorMapContainer.style.overflow = 'auto';
-    }
-}
-
+    reader.onload = function() {
+        globalData = reader.result;
+        calculateMinMax();
+        updateColorMap();
     };
 });
 
@@ -28,8 +18,23 @@ document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
 });
 
+document.getElementById('fullscreenButton').addEventListener('click', function() {
+    const colorMapContainer = document.getElementById('colorMapContainer');
+    colorMapContainer.style.position = 'fixed';
+    colorMapContainer.style.top = '0';
+    colorMapContainer.style.left = '0';
+    colorMapContainer.style.width = '100%';
+    colorMapContainer.style.height = '100%';
+    colorMapContainer.style.zIndex = '1000';
+    colorMapContainer.style.backgroundColor = 'white';
+    colorMapContainer.style.overflow = 'scroll';
+});
+
 document.getElementById('applyButton').addEventListener('click', function() {
-    applyCustomStyles();
+    const table = document.querySelector('table');
+    if (table) {
+        table.style.fontSize = '12px';  // フォントサイズを小さく設定
+    }
 });
 
 function calculateMinMax() {
@@ -131,19 +136,4 @@ function getColorForValue(value, min, max) {
         }
         return colors[colors.length - 1];
     }
-}
-
-function applyCustomStyles() {
-    const table = document.querySelector('table');
-    if (!table) return;
-    
-    table.style.width = '6px';
-    table.style.height = '4px';
-    table.style.tableLayout = 'fixed';
-
-    const cells = document.querySelectorAll('th, td');
-    cells.forEach(cell => {
-        cell.style.width = '1px';
-        cell.style.height = '1px';
-    });
 }
