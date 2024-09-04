@@ -37,7 +37,7 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
             <style>
                 .highlight {
                     position: relative;
-                    box-shadow: 0 0 0 4px red;
+                    box-shadow: 0 0 0 50px;
                     border-radius: 50%;
                     z-index: 10;
                 }
