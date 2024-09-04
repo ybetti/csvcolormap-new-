@@ -30,7 +30,7 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     const newWindow = window.open('', '', 'width=800,height=600');
 
     // 新しいウィンドウにHTMLを追加
-    newWindow.document.write('<html><head><title>全体図</title><style> .highlight { position: relative; } .highlight::before { content: "●"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: red; font-size: 20px; z-index: 10; } </style></head><body></body></html>');
+    newWindow.document.write('<html><head><title>全体図</title><style> .highlight { position: relative; box-shadow: 0 0 0 4px red; border-radius: 50%; z-index: 10; } </style></head><body></body></html>');
 
     const colorMapContainer = newWindow.document.body;
     const colorMapElement = document.getElementById('colorMap');
@@ -45,7 +45,7 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     // 最小値を取得
     const minValue = parseFloat(document.getElementById('minValue').value);
 
-    // テーブル内のセルをループし、最小値のセルに丸印を追加
+    // テーブル内のセルをループし、最小値のセルに丸い枠を追加
     rows.forEach(row => {
         const cells = row.querySelectorAll('td');
         cells.forEach(cell => {
