@@ -20,13 +20,11 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
 
     // 新しいウィンドウにHTMLを追加
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
-
     const colorMapContainer = newWindow.document.body;
 
     // コンテナを作成
     const tableContainer = document.getElementById('colorMap').cloneNode(true);
     colorMapContainer.appendChild(tableContainer);
-
     const table = colorMapContainer.querySelector('table');
 
     // テーブルの縮小（10分の1）
@@ -47,7 +45,7 @@ document.getElementById('updateButton').addEventListener('click', function() {
 document.getElementById('applyButton').addEventListener('click', function() {
     const table = document.querySelector('table');
     if (table) {
-        table.style.fontSize = '12px';  // フォントサイズを小さく設定
+        table.style.fontSize = '12px';  // フォントサイズ設定
     }
 });
 
