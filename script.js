@@ -33,7 +33,6 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
 });
 
-
 document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
 });
