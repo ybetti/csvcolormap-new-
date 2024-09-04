@@ -40,3 +40,9 @@ th, td {
     max-height: none;
     overflow: visible;
 }
+
+.zoomed-table {
+    transform: scale(4.5); /* ズーム率を調整 */
+    transform-origin: top left;
+}
+
