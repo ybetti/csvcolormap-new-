@@ -1,0 +1,45 @@
+table {
+    width: 100%;
+    table-layout: fixed; /* テーブルの幅を均等にする */
+}
+
+th, td {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis; /* テキストがセルに収まらない場合に省略記号を表示 */
+    white-space: nowrap; /* テキストを改行しない */
+}
+
+
+.color-input {
+    margin: 1px;
+}
+
+.large-button {
+    font-size: 3px;
+    padding: 3px 6px;
+    margin: 3px;
+}
+
+.small-font-cell {
+    font-size: 12px; /* 文字の大きさを指定 */
+}
+
+#colorMapContainer {
+    width: 100%;
+    max-height: 400px; /* ここでテーブルの最大高さを指定 */
+    overflow: auto; /* 内容が見切れた場合にスクロールできるように設定 */
+    border: 1px solid #000; /* 見やすくするために枠を付ける */
+}
+
+#colorMap {
+    width: 100%;
+    height: auto;
+}
+
+.fullscreen-table {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    overflow: visible;
+}
