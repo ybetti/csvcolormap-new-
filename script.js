@@ -136,4 +136,25 @@ function getColorForValue(value, min, max) {
         }
         return colors[colors.length - 1];
     }
+
+    document.getElementById('fullscreenButton').addEventListener('click', function() {
+    const colorMapContainer = document.getElementById('colorMapContainer');
+    const table = document.querySelector('table');
+
+    // コンテナの設定
+    colorMapContainer.style.position = 'fixed';
+    colorMapContainer.style.top = '0';
+    colorMapContainer.style.left = '0';
+    colorMapContainer.style.width = '100%';
+    colorMapContainer.style.height = '100%';
+    colorMapContainer.style.zIndex = '1000';
+    colorMapContainer.style.backgroundColor = 'white';
+    colorMapContainer.style.overflow = 'scroll';
+
+    // テーブルの幅をモニターに合わせて縮小
+    const screenWidth = window.innerWidth;
+    table.style.width = `${screenWidth}px`;
+    table.style.tableLayout = 'fixed'; // 固定レイアウトでセル幅を均等にする
+});
+
 }
