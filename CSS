@@ -1,11 +1,18 @@
 table {
-    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    transform-origin: top left; /* 縮小の起点を左上に設定 */
 }
 
-table, th, td {
-    border: 0.1px solid black;
-    padding: 1px;
+th, td {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10px; /* 文字サイズも縮小 */
 }
+
+
 
 .color-input {
     margin: 1px;
