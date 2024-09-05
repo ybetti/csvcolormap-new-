@@ -14,6 +14,32 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     };
 });
 
+document.getElementById('fullscreenButton').addEventListener('click', function() {
+    // 新しいウィンドウを開く
+    const newWindow = window.open('', '', 'width=800,height=600');
+
+    // 新しいウィンドウにHTMLを追加
+    newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
+
+    const colorMapContainer = newWindow.document.body;
+
+    // コンテナを作成
+    const tableContainer = document.getElementById('colorMap').cloneNode(true);
+    colorMapContainer.appendChild(tableContainer);
+
+    const table = colorMapContainer.querySelector('table');
+
+    // テーブルの縮小（10分の1）
+    table.style.transform = 'scale(0.1)';
+    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
+
+    // スクロール可能にする
+    colorMapContainer.style.overflow = 'auto';
+
+    // 必要に応じて追加のスタイルを設定
+    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
+});
+
 document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
 });
@@ -24,71 +50,6 @@ document.getElementById('applyButton').addEventListener('click', function() {
         table.style.fontSize = '12px';  // フォントサイズを小さく設定
     }
 });
-
-document.getElementById('fullscreenButton').addEventListener('click', function() {
-    // 新しいウィンドウを開く
-    const newWindow = window.open('', '', 'width=800,height=600');
-
-    // 新しいウィンドウにHTMLを追加
-    newWindow.document.write(`
-        <html>
-        <head>
-            <title>全体図</title>
-            <style>
-                .highlight {
-                    position: relative;
-                    box-shadow: 0 0 0 50px;
-                    border-radius: 50%;
-                    z-index: 10;
-                }
-            </style>
-        </head>
-        <body></body>
-        </html>
-    `);
-
-    const colorMapContainer = newWindow.document.body;
-    const colorMapElement = document.getElementById('colorMap');
-    
-    // テーブルを新しいウィンドウにコピー
-    const tableContainer = colorMapElement.cloneNode(true);
-    colorMapContainer.appendChild(tableContainer);
-
-    const table = colorMapContainer.querySelector('table');
-    const rows = table.querySelectorAll('tr');
-
-    // 最小値を取得
-    const minValue = parseFloat(document.getElementById('minValue').value);
-
-    // テーブル内のセルをループし、最小値のセルに丸い枠を追加
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        cells.forEach(cell => {
-            const cellValue = parseFloat(cell.textContent);
-            if (!isNaN(cellValue) && cellValue === minValue) {
-                cell.classList.add('highlight');
-            }
-        });
-    });
-
-    // テーブルの縮小（10分の1）
-    const scale = 0.1;
-    table.style.transform = `scale(${scale})`;
-    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
-
-    // 最小値セルのボックスシャドウをリサイズ
-    const minCells = table.querySelectorAll('.highlight');
-    minCells.forEach(cell => {
-        cell.style.boxShadow = `${4 * scale}px ${4 * scale}px 0 ${4 * scale}px red`;
-    });
-
-    // スクロール可能にする
-    colorMapContainer.style.overflow = 'auto';
-
-    // 必要に応じて追加のスタイルを設定
-    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
-});
-
 
 function calculateMinMax() {
     if (!globalData) return;
