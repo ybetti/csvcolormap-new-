@@ -70,6 +70,35 @@ function calculateMinMax() {
     document.getElementById('maxValue').value = autoMaxValue;
 }
 
+document.addEventListener('mousemove', function(event) {
+    const lens = document.getElementById('zoomLens');
+    const table = document.getElementById('colorMap');
+
+    if (table) {
+        const rect = table.getBoundingClientRect();
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+
+        // テーブルの中でのみ拡大レンズを表示
+        if (mouseX > rect.left && mouseX < rect.right && mouseY > rect.top && mouseY < rect.bottom) {
+            lens.style.display = 'block';
+
+            // レンズの位置をマウスに追従させる
+            lens.style.left = (mouseX - lens.offsetWidth / 2) + 'px';
+            lens.style.top = (mouseY - lens.offsetHeight / 2) + 'px';
+
+            // テーブル画像のどの部分を拡大するか計算
+            const zoomLevel = 2; // 拡大率
+            const zoomImg = lens.querySelector('img');
+            zoomImg.style.left = -((mouseX - rect.left) * zoomLevel - lens.offsetWidth / 2) + 'px';
+            zoomImg.style.top = -((mouseY - rect.top) * zoomLevel - lens.offsetHeight / 2) + 'px';
+        } else {
+            lens.style.display = 'none'; // マウスがテーブルの外にあるときはレンズを隠す
+        }
+    }
+});
+
+
 function updateColorMap() {
     if (!globalData) return;
 
