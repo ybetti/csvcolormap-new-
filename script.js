@@ -98,6 +98,13 @@ function updateColorMap() {
         rowData.forEach(cell => {
             const td = document.createElement('td');
             td.textContent = cell;
+
+            // ツールチップを追加
+            const tooltip = document.createElement('span');
+            tooltip.classList.add('tooltip');
+            tooltip.textContent = `値: ${cell}`;
+            td.appendChild(tooltip);
+
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
                 td.style.backgroundColor = getColorForValue(numericValue, minValue, maxValue);
