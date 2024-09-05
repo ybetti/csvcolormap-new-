@@ -3,37 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5CSVからColor Map</title>
-    <style>
-        table {
-            border-collapse: collapse;
-        }
-
-        table, th, td {
-            border: 0.5px solid black;
-            padding: 5px;
-            text-align: center;
-        }
-
-        .color-input {
-            margin: 2px;
-        }
-
-        .large-button {
-            font-size: 20px;
-            padding: 10px 20px;
-            margin: 10px;
-        }
-
-        /* セル全体を囲む丸い枠を定義 */
-        .highlight {
-            position: relative;
-            box-shadow: 0 0 0 100px; /* 4pxの赤い線でセルを囲む */
-            border-radius: 50%; /* 丸い枠を作成 */
-            z-index: 10; /* 上に表示するための設定 */
-        }
-
-    </style>
+    <title>CSVからColor Map</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <input type="file" id="fileInput" accept=".csv">
@@ -47,40 +18,13 @@
         <div class="color-input">
             <label> 1% - 10%  : <input type="number" id="range1" value="10" min="1" max="100"> <input type="color" id="color1" value="#ff2e2e"></label>
         </div>
-    　　<div class="color-input">
+        <div class="color-input">
             <label>11% - 20%  : <input type="number" id="range2" value="20" min="1" max="100"> <input type="color" id="color2" value="#f9b030"></label>
         </div>
-        <div class="color-input">
-            <label>21% - 30%  : <input type="number" id="range3" value="30" min="1" max="100"> <input type="color" id="color3" value="#fcff33"></label>
-        </div>
-        <div class="color-input">
-            <label>31% - 40%  : <input type="number" id="range4" value="40" min="1" max="100"> <input type="color" id="color4" value="#87fb28"></label>
-        </div>
-        <div class="color-input">
-            <label>41% - 50%  : <input type="number" id="range5" value="50" min="1" max="100"> <input type="color" id="color5" value="#00db04"></label>
-        </div>
-        <div class="color-input">
-            <label>51% - 60%  : <input type="number" id="range6" value="60" min="1" max="100"> <input type="color" id="color6" value="#2effaf"></label>
-        </div>
-        <div class="color-input">
-            <label>61% - 70%  : <input type="number" id="range7" value="70" min="1" max="100"> <input type="color" id="color7" value="#13ecdd"></label>
-        </div>
-        <div class="color-input">
-            <label>71% - 80%  : <input type="number" id="range8" value="80" min="1" max="100"> <input type="color" id="color8" value="#0084ff"></label>
-        </div>
-        <div class="color-input">
-            <label>81% - 90%  : <input type="number" id="range9" value="90" min="1" max="100"> <input type="color" id="color9" value="#0062ff"></label>
-        </div>
-        <div class="color-input">
-            <label>91% - 100%: <input type="number" id="range10" value="100" min="1" max="100"> <input type="color" id="color10" value="#0000ff"></label>
-        </div>
+        <!-- 続く色範囲選択用の要素 -->
     </div>
     <button id="updateButton" class="large-button">カラーマップを更新</button>
-
     <button id="fullscreenButton" class="large-button">全体図を表示</button>
-
-    <div id="zoomLens"></div>
-    
     <div id="colorMapContainer">
         <div id="colorMap"></div>
     </div>
