@@ -1,7 +1,6 @@
 table {
     width: 100%;
     table-layout: fixed;
-    transform-origin: top left;
 }
 
 th, td {
@@ -34,15 +33,21 @@ th, td {
     height: auto;
 }
 
-/* 虫眼鏡レンズのスタイル */
+/* 虫眼鏡のスタイル */
 #zoomLens {
     position: absolute;
     border: 2px solid #000;
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     overflow: hidden;
     pointer-events: none;
     display: none;
     z-index: 100;
+}
+
+#zoomLens img {
+    position: absolute;
+    width: 200%;  /* 拡大率 */
+    height: 200%;
 }
