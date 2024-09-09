@@ -29,30 +29,6 @@ th, td {
     border: 1px solid #000; /* 見やすくするために枠を付ける */
 }
 
-.magnifier {
-    position: absolute;
-    border: 3px solid black;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    pointer-events: none; /* マウスイベントを無視 */
-    display: none; /* 初期状態は非表示 */
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
-    z-index: 1000; /* 他の要素より前面に表示 */
-}
-
-.magnified-area {
-    position: absolute;
-    width: 200%; /* 拡大倍率に応じて調整 */
-    height: 200%;
-    transform: scale(1.5); /* 拡大倍率を調整 */
-    transform-origin: top left;
-    /* テーブルの背景を設定 */
-    background-image: inherit; /* テーブルの背景を継承 */
-    background-repeat: no-repeat;
-}
-
 #colorMap {
     width: 100%;
     height: auto;
@@ -64,22 +40,3 @@ th, td {
     max-height: none;
     overflow: visible;
 }
-
-.magnifier {
-    position: absolute;
-    border: 3px solid black;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    pointer-events: none; /* マウスイベントを無視 */
-    display: none;
-}
-
-.magnified-area {
-    width: 500%;
-    height: 500%;
-    transform: scale(0.2); /* 拡大倍率を調整 */
-    transform-origin: top left;
-}
-
