@@ -46,7 +46,7 @@ th, td {
     height: 50px; /* 高さを調整 */
     background-color: purple; /* 背景色を黄色に設定 */
     border-radius: 50%; /* 円形にする */
-    border: 10px solid red; /* 赤い枠線を追加 */
+    border: 10px solid black; /* 赤い枠線を追加 */
     display: inline-block;
     text-align: center;
     line-height: 30px; /* テキストを中央に配置 */
