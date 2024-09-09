@@ -106,6 +106,7 @@ function updateColorMap() {
                     const span = document.createElement('span');
                     span.textContent = numericValue; // 数値を表示
                     td.appendChild(span); // 数値を追加
+                  }
                 } else {
                     td.textContent = numericValue;
                 }
