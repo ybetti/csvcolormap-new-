@@ -40,26 +40,3 @@ th, td {
     max-height: none;
     overflow: visible;
 }
-
-#magnifier {
-    position: absolute;
-    border: 3px solid black;
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    overflow: hidden;
-    pointer-events: none;
-    transform: scale(2); /* 拡大倍率 */
-}
-
-#selectionBox {
-    position: absolute;
-    border: 2px dashed #000;
-    pointer-events: none;
-}
-
-#selectionBox {
-    position: absolute;
-    border: 2px dashed #000;
-    pointer-events: none;
-}
