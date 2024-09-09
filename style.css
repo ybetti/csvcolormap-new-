@@ -22,6 +22,28 @@ th, td {
     margin: 3px;
 }
 
+.min-value-cell {
+    position: relative;
+}
+
+.min-value-cell::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 150px;
+    height: 150px;
+    background-color: rgba(255, 0, 0, 0.3); /* 半透明の赤い円 */
+    border-radius: 50%;
+    border: 3px solid red;
+    z-index: 0; /* 円をテキストの背面に */
+}
+
+.min-value-cell span {
+    position: relative;
+    z-index: 1; /* テキストを円の前面に */
+}
+
 #colorMapContainer {
     width: 100%;
     max-height: 400px; /* テーブルの最大高さを指定 */
@@ -40,15 +62,3 @@ th, td {
     max-height: none;
     overflow: visible;
 }
-
-.min-value-marker {
-    width: 50px; /* 幅を調整 */
-    height: 50px; /* 高さを調整 */
-    background-color: purple; /* 背景色を黄色に設定 */
-    border-radius: 50%; /* 円形にする */
-    border: 10px solid black; /* 赤い枠線を追加 */
-    display: inline-block;
-    text-align: center;
-    line-height: 30px; /* テキストを中央に配置 */
-}
-
