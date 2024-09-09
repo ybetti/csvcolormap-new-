@@ -24,6 +24,7 @@ th, td {
 
 .min-value-cell {
     position: relative;
+    z-index: 1; /* これによりセルのテキストが前に表示されます */
 }
 
 .min-value-cell::before {
