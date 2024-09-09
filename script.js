@@ -14,8 +14,70 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     };
 });
 
-document.getElementById('fullscreenButton').addEventListener('click', function() {
+document.getElementById('fullscreenButton').addEventListener('click', function () {
     const newWindow = window.open('', '', 'width=800,height=600');
+
+    // 新しいウィンドウにHTMLを追加
+    newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
+    const colorMapContainer = newWindow.document.body;
+
+    // テーブルをクローンして追加
+    const tableContainer = document.getElementById('colorMap').cloneNode(true);
+    colorMapContainer.appendChild(tableContainer);
+
+    const table = colorMapContainer.querySelector('table');
+    table.style.transform = 'scale(0.1)';
+    table.style.transformOrigin = 'top left';
+
+    colorMapContainer.style.overflow = 'auto';
+
+    // 拡大鏡ボタンの追加
+    const zoomButton = newWindow.document.createElement('button');
+    zoomButton.textContent = '拡大鏡を表示';
+    zoomButton.style.fontSize = '16px';
+    zoomButton.style.margin = '10px';
+    colorMapContainer.appendChild(zoomButton);
+
+    // 拡大鏡の実装
+    zoomButton.addEventListener('click', function () {
+        const magnifier = newWindow.document.createElement('div');
+        magnifier.style.position = 'absolute';
+        magnifier.style.border = '2px solid #000';
+        magnifier.style.borderRadius = '50%';
+        magnifier.style.width = '200px';
+        magnifier.style.height = '200px';
+        magnifier.style.overflow = 'hidden';
+        magnifier.style.pointerEvents = 'none';
+        magnifier.style.display = 'none';
+        magnifier.style.zIndex = '1000';
+        colorMapContainer.appendChild(magnifier);
+
+        // 拡大鏡にテーブルをクローンして表示
+        const magnifiedTable = table.cloneNode(true);
+        magnifiedTable.style.transform = 'scale(2)'; // 2倍に拡大
+        magnifier.appendChild(magnifiedTable);
+
+        // マウス移動に合わせて拡大鏡を表示
+        colorMapContainer.addEventListener('mousemove', function (e) {
+            magnifier.style.display = 'block';
+            magnifier.style.left = `${e.pageX - 100}px`; // 拡大鏡の中央にマウスが来るように調整
+            magnifier.style.top = `${e.pageY - 100}px`;
+
+            // 拡大鏡の中のテーブル位置を調整
+            magnifiedTable.style.position = 'absolute';
+            magnifiedTable.style.left = `${-e.pageX * 2 + 100}px`;
+            magnifiedTable.style.top = `${-e.pageY * 2 + 100}px`;
+        });
+
+        // マウスが外れた時に拡大鏡を隠す
+        colorMapContainer.addEventListener('mouseleave', function () {
+            magnifier.style.display = 'none';
+        });
+    });
+
+    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
+});
+
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
 
     const colorMapContainer = newWindow.document.body;
