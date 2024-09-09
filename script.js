@@ -88,3 +88,29 @@ function generateTableSnapshot(table) {
     ctx.drawImage(table, 0, 0);
     return canvas.toDataURL();
 }
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    
+    if (!file) {
+        console.log('ファイルが選択されていません。');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsText(file);
+
+    reader.onload = function() {
+        globalData = reader.result;
+        
+        // 読み込んだデータをコンソールで確認
+        console.log('読み込んだCSVデータ:', globalData);
+        
+        calculateMinMax();  // 最小値・最大値の計算
+        updateColorMap();   // カラーマップの更新
+    };
+
+    reader.onerror = function() {
+        console.log('ファイルの読み込みに失敗しました。');
+    };
+});
