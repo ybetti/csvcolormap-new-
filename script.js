@@ -15,8 +15,81 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
 });
 
 document.getElementById('fullscreenButton').addEventListener('click', function() {
-    // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=800,height=600');
+    newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
+
+    const colorMapContainer = newWindow.document.body;
+    const tableContainer = document.getElementById('colorMap').cloneNode(true);
+    colorMapContainer.appendChild(tableContainer);
+
+    const table = colorMapContainer.querySelector('table');
+    table.style.transform = 'scale(0.1)';
+    table.style.transformOrigin = 'top left';
+    colorMapContainer.style.overflow = 'auto';
+
+    // 拡大鏡の要素を作成
+    const magnifier = newWindow.document.createElement('div');
+    magnifier.style.position = 'absolute';
+    magnifier.style.border = '3px solid black';
+    magnifier.style.width = '150px';
+    magnifier.style.height = '150px';
+    magnifier.style.borderRadius = '50%';
+    magnifier.style.overflow = 'hidden';
+    magnifier.style.pointerEvents = 'none';
+    magnifier.style.display = 'none';
+    magnifier.style.zIndex = '100';  // 拡大鏡が上に表示されるようにする
+    colorMapContainer.appendChild(magnifier);
+
+    const magnifiedArea = newWindow.document.createElement('div');
+    magnifiedArea.style.position = 'absolute';
+    magnifiedArea.style.width = `${table.offsetWidth * 5}px`;  // 元のテーブルの5倍のサイズ
+    magnifiedArea.style.height = `${table.offsetHeight * 5}px`;
+    magnifiedArea.style.backgroundImage = `url(${captureTableAsImage(table)})`;  // テーブルの画像を背景として使用
+    magnifiedArea.style.backgroundSize = `${table.offsetWidth * 5}px ${table.offsetHeight * 5}px`;
+    magnifier.appendChild(magnifiedArea);
+
+    // マウスの動きに合わせて拡大鏡を表示
+    colorMapContainer.addEventListener('mousemove', function(e) {
+        const rect = colorMapContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // 拡大鏡の表示位置
+        magnifier.style.left = `${x - 75}px`;
+        magnifier.style.top = `${y - 75}px`;
+        magnifier.style.display = 'block';
+
+        // 拡大領域の背景位置を調整
+        magnifiedArea.style.backgroundPosition = `-${x * 5}px -${y * 5}px`;
+    });
+
+    colorMapContainer.addEventListener('mouseleave', function() {
+        magnifier.style.display = 'none';  // マウスが離れたら拡大鏡を非表示
+    });
+
+    newWindow.document.close();  // 新しいウィンドウの書き込みを終了
+});
+
+// テーブルを画像としてキャプチャする関数
+function captureTableAsImage(table) {
+    const clonedTable = table.cloneNode(true);
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.top = '-9999px';
+    tempDiv.appendChild(clonedTable);
+    document.body.appendChild(tempDiv);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = clonedTable.offsetWidth;
+    canvas.height = clonedTable.offsetHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(1, 1);
+    ctx.drawImage(clonedTable, 0, 0);
+
+    document.body.removeChild(tempDiv);
+    return canvas.toDataURL('image/png');
+}
 
     // 新しいウィンドウにHTMLを追加
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
