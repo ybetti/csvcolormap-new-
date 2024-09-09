@@ -16,7 +16,7 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
 
 document.getElementById('fullscreenButton').addEventListener('click', function() {
     // 新しいウィンドウを開く
-    const newWindow = window.open('', '', 'width=800,height=600');
+    const newWindow = window.open('', '', 'width=1500,height=600');
 
     // 新しいウィンドウにHTMLを追加
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
