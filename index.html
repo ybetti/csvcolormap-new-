@@ -6,27 +6,32 @@
     <title>CSVからColor Map New</title>
     <style>
         table {
-            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            transform-origin: top left; /* 縮小の起点を左上に設定 */
         }
 
-        table, th, td {
-            border: 0.5px solid black;
-            padding: 5px;
+        th, td {
+            width: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 10px; /* 文字サイズを縮小 */
         }
 
         .color-input {
-            margin: 2px;
+            margin: 1px;
         }
 
         .large-button {
-            font-size: 20px;
-            padding: 10px 20px;
-            margin: 10px;
+            font-size: 12px; /* 読みやすさを考慮してサイズを調整 */
+            padding: 5px 10px; /* ボタンの押しやすさを考慮 */
+            margin: 3px;
         }
 
         #colorMapContainer {
             width: 100%;
-            max-height: 400px; /* ここでテーブルの最大高さを指定 */
+            max-height: 400px; /* テーブルの最大高さを指定 */
             overflow: auto; /* 内容が見切れた場合にスクロールできるように設定 */
             border: 1px solid #000; /* 見やすくするために枠を付ける */
         }
@@ -41,6 +46,17 @@
             height: 100%;
             max-height: none;
             overflow: visible;
+        }
+
+        #magnifier {
+            position: absolute;
+            border: 3px solid black;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+            pointer-events: none;
+            transform: scale(2); /* 拡大倍率 */
         }
     </style>
 </head>
@@ -85,6 +101,7 @@
         </div>
     </div>
     <button id="updateButton" class="large-button">カラーマップを更新</button>
+    <button id="applyButton" class="large-button">適用</button>
     <button id="fullscreenButton" class="large-button">全体図を表示</button>
     
     <div id="colorMapContainer">
