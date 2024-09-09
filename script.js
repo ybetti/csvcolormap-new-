@@ -19,147 +19,25 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     const newWindow = window.open('', '', 'width=800,height=600');
 
     // 新しいウィンドウにHTMLを追加
-    newWindow.document.write(`
-        <html>
-            <head>
-                <title>全体図</title>
-                <style>
-                    body {
-                        margin: 0;
-                        padding: 0;
-                    }
-                    #colorMapContainer {
-                        width: 100%;
-                        height: 100%;
-                        overflow: auto;
-                        position: relative;
-                    }
-                    #colorMap {
-                        width: 100%;
-                        height: auto;
-                    }
-                    #selectionBox {
-                        position: absolute;
-                        border: 2px dashed #000;
-                        pointer-events: none;
-                    }
-                    .large-button {
-                        font-size: 12px;
-                        padding: 5px 10px;
-                        margin: 3px;
-                    }
-                </style>
-            </head>
-            <body>
-                <button id="selectAreaButton" class="large-button">範囲選択</button>
-                <div id="colorMapContainer">
-                    <div id="colorMap"></div>
-                </div>
-                <script>
-                    const originalTable = document.querySelector('#colorMap table');
-                    if (originalTable) {
-                        const tableClone = originalTable.cloneNode(true);
-                        const tableWrapper = document.createElement('div');
-                        tableWrapper.style.position = 'relative';
-                        tableWrapper.style.width = '300%';
-                        tableWrapper.style.height = '300%';
-                        tableWrapper.style.overflow = 'auto';
-                        document.body.appendChild(tableWrapper);
-                        tableWrapper.appendChild(tableClone);
-                        
-                        const scale = 3;  
-                        tableClone.style.transform = \`scale(\${scale})\`;
-                        tableClone.style.transformOrigin = 'top left';
-                        tableClone.style.position = 'absolute';
-                    }
-
-                    let startX, startY, endX, endY;
-                    let selectionBox;
-
-                    document.getElementById('selectAreaButton').addEventListener('click', function() {
-                        document.body.addEventListener('mousedown', startSelection);
-                        document.body.addEventListener('mousemove', updateSelection);
-                        document.body.addEventListener('mouseup', endSelection);
-                    });
-
-                    function startSelection(e) {
-                        const rect = document.getElementById('colorMapContainer').getBoundingClientRect();
-                        startX = e.clientX - rect.left;
-                        startY = e.clientY - rect.top;
-
-                        if (!selectionBox) {
-                            selectionBox = document.createElement('div');
-                            selectionBox.id = 'selectionBox';
-                            document.getElementById('colorMapContainer').appendChild(selectionBox);
-                        }
-                    }
-
-                    function updateSelection(e) {
-                        if (!selectionBox) return;
-
-                        const rect = document.getElementById('colorMapContainer').getBoundingClientRect();
-                        endX = e.clientX - rect.left;
-                        endY = e.clientY - rect.top;
-
-                        selectionBox.style.left = \`\${Math.min(startX, endX)}px\`;
-                        selectionBox.style.top = \`\${Math.min(startY, endY)}px\`;
-                        selectionBox.style.width = \`\${Math.abs(endX - startX)}px\`;
-                        selectionBox.style.height = \`\${Math.abs(endY - startY)}px\`;
-                    }
-
-                    function endSelection() {
-                        document.body.removeEventListener('mousedown', startSelection);
-                        document.body.removeEventListener('mousemove', updateSelection);
-                        document.body.removeEventListener('mouseup', endSelection);
-
-                        showSelectedArea();
-                    }
-
-                    function showSelectedArea() {
-                        const selection = document.getElementById('selectionBox');
-                        if (!selection) return;
-
-                        const rectLeft = parseInt(selection.style.left);
-                        const rectTop = parseInt(selection.style.top);
-                        const rectWidth = parseInt(selection.style.width);
-                        const rectHeight = parseInt(selection.style.height);
-
-                        const newWindow = window.open('', '', 'width=800,height=600');
-                        newWindow.document.write('<html><head><title>拡大表示</title></head><body></body></html>');
-                        const newDocument = newWindow.document;
-
-                        const tableClone = document.querySelector('#colorMap table').cloneNode(true);
-                        const tableWrapper = newDocument.createElement('div');
-                        tableWrapper.style.position = 'relative';
-                        tableWrapper.style.width = '300%';
-                        tableWrapper.style.height = '300%';
-                        tableWrapper.style.overflow = 'auto';
-                        newDocument.body.appendChild(tableWrapper);
-                        tableWrapper.appendChild(tableClone);
-
-                        const scale = 3;  
-                        tableClone.style.transform = \`scale(\${scale})\`;
-                        tableClone.style.transformOrigin = 'top left';
-                        tableClone.style.position = 'absolute';
-                        tableClone.style.left = \`-\${rectLeft * scale}px\`;
-                        tableClone.style.top = \`-\${rectTop * scale}px\`;
-                    }
-                </script>
-            </body>
-        </html>
-    `);
-});
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
+
     const colorMapContainer = newWindow.document.body;
 
+    // コンテナを作成
     const tableContainer = document.getElementById('colorMap').cloneNode(true);
     colorMapContainer.appendChild(tableContainer);
+
     const table = colorMapContainer.querySelector('table');
 
+    // テーブルの縮小（10分の1）
     table.style.transform = 'scale(0.1)';
-    table.style.transformOrigin = 'top left'; 
+    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
+
+    // スクロール可能にする
     colorMapContainer.style.overflow = 'auto';
-    newWindow.document.close();
+
+    // 必要に応じて追加のスタイルを設定
+    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
 });
 
 document.getElementById('updateButton').addEventListener('click', function() {
@@ -169,111 +47,9 @@ document.getElementById('updateButton').addEventListener('click', function() {
 document.getElementById('applyButton').addEventListener('click', function() {
     const table = document.querySelector('table');
     if (table) {
-        table.style.fontSize = '12px'; 
+        table.style.fontSize = '12px';  // フォントサイズを小さく設定
     }
 });
-
-document.getElementById('rangeSelectButton').addEventListener('click', function() {
-    isSelecting = !isSelecting;
-    if (isSelecting) {
-        document.getElementById('colorMap').addEventListener('mousedown', startSelection);
-        document.getElementById('colorMap').addEventListener('mousemove', updateSelection);
-        document.getElementById('colorMap').addEventListener('mouseup', endSelection);
-    } else {
-        document.getElementById('colorMap').removeEventListener('mousedown', startSelection);
-        document.getElementById('colorMap').removeEventListener('mousemove', updateSelection);
-        document.getElementById('colorMap').removeEventListener('mouseup', endSelection);
-        clearSelection();
-    }
-});
-
-let isSelecting = false;
-let startX, startY, endX, endY;
-
-function startSelection(e) {
-    if (!isSelecting) return;
-    startX = e.clientX;
-    startY = e.clientY;
-    document.getElementById('colorMap').style.cursor = 'crosshair';
-}
-
-function updateSelection(e) {
-    if (!isSelecting || startX === undefined || startY === undefined) return;
-    endX = e.clientX;
-    endY = e.clientY;
-    drawSelection();
-}
-
-function endSelection(e) {
-    if (!isSelecting || startX === undefined || startY === undefined) return;
-    endX = e.clientX;
-    endY = e.clientY;
-    showSelectedArea();
-    document.getElementById('colorMap').style.cursor = 'default';
-}
-
-function drawSelection() {
-    const colorMap = document.getElementById('colorMap');
-    const rect = colorMap.getBoundingClientRect();
-    const selectionBox = document.getElementById('selectionBox');
-
-    if (!selectionBox) {
-        const newBox = document.createElement('div');
-        newBox.id = 'selectionBox';
-        newBox.style.position = 'absolute';
-        newBox.style.border = '2px dashed #000';
-        colorMap.appendChild(newBox);
-    }
-
-    const selection = document.getElementById('selectionBox');
-    selection.style.left = `${Math.min(startX, endX) - rect.left}px`;
-    selection.style.top = `${Math.min(startY, endY) - rect.top}px`;
-    selection.style.width = `${Math.abs(endX - startX)}px`;
-    selection.style.height = `${Math.abs(endY - startY)}px`;
-}
-
-function clearSelection() {
-    const selectionBox = document.getElementById('selectionBox');
-    if (selectionBox) {
-        selectionBox.remove();
-    }
-}
-
-function showSelectedArea() {
-    const colorMap = document.getElementById('colorMap');
-    const rect = colorMap.getBoundingClientRect();
-    const selectionBox = document.getElementById('selectionBox');
-    
-    if (!selectionBox) return;
-    
-    const rectLeft = parseInt(selectionBox.style.left);
-    const rectTop = parseInt(selectionBox.style.top);
-    const rectWidth = parseInt(selectionBox.style.width);
-    const rectHeight = parseInt(selectionBox.style.height);
-
-    const newWindow = window.open('', '', 'width=800,height=600');
-    newWindow.document.write('<html><head><title>拡大表示</title></head><body></body></html>');
-    const newDocument = newWindow.document;
-
-    const originalTable = document.querySelector('#colorMap table');
-    if (originalTable) {
-        const tableClone = originalTable.cloneNode(true);
-        const tableWrapper = newDocument.createElement('div');
-        tableWrapper.style.position = 'relative';
-        tableWrapper.style.width = '300%';
-        tableWrapper.style.height = '300%';
-        tableWrapper.style.overflow = 'auto';
-        newDocument.body.appendChild(tableWrapper);
-        tableWrapper.appendChild(tableClone);
-
-        const scale = 3;  
-        tableClone.style.transform = `scale(${scale})`;
-        tableClone.style.transformOrigin = 'top left';
-        tableClone.style.position = 'absolute';
-        tableClone.style.left = `-${rectLeft * scale}px`;
-        tableClone.style.top = `-${rectTop * scale}px`;
-    }
-}
 
 function calculateMinMax() {
     if (!globalData) return;
