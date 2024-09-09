@@ -42,6 +42,13 @@ th, td {
 }
 
 .min-value-marker {
-    border: 10px solid purple; /* 赤い枠線を追加 */
-    background-color: purple; /* 背景色を黄色に変更 */
+    width: 30px; /* 幅を調整 */
+    height: 30px; /* 高さを調整 */
+    background-color: yellow; /* 背景色を黄色に設定 */
+    border-radius: 50%; /* 円形にする */
+    border: 3px solid red; /* 赤い枠線を追加 */
+    display: inline-block;
+    text-align: center;
+    line-height: 30px; /* テキストを中央に配置 */
 }
+
