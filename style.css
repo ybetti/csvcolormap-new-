@@ -41,3 +41,21 @@ th, td {
     overflow: visible;
 }
 
+.magnifier {
+    position: absolute;
+    border: 3px solid black;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none; /* マウスイベントを無視 */
+    display: none;
+}
+
+.magnified-area {
+    width: 500%;
+    height: 500%;
+    transform: scale(0.2); /* 拡大倍率を調整 */
+    transform-origin: top left;
+}
+
