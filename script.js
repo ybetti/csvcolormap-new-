@@ -15,10 +15,6 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
 
     reader.onload = function() {
         globalData = reader.result;
-        
-        // 読み込んだデータをコンソールで確認
-        console.log('読み込んだCSVデータ:', globalData);
-        
         calculateMinMax();  // 最小値・最大値の計算
         updateColorMap();   // カラーマップの更新
     };
@@ -125,8 +121,16 @@ function calculateMinMax() {
     if (!globalData) return;
 
     const lines = globalData.split('\n');
-    for (let i = 1; i < lines.length; i++) {
-        const rowData = lines[i].split(',');
+    let index = 1;
+
+    function processLine() {
+        if (index >= lines.length) {
+            document.getElementById('minValue').value = autoMinValue;
+            document.getElementById('maxValue').value = autoMaxValue;
+            return;
+        }
+
+        const rowData = lines[index].split(',');
         rowData.forEach(cell => {
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
@@ -134,10 +138,12 @@ function calculateMinMax() {
                 if (numericValue > autoMaxValue) autoMaxValue = numericValue;
             }
         });
+
+        index++;
+        requestAnimationFrame(processLine);
     }
 
-    document.getElementById('minValue').value = autoMinValue;
-    document.getElementById('maxValue').value = autoMaxValue;
+    processLine();
 }
 
 function updateColorMap() {
@@ -162,8 +168,15 @@ function updateColorMap() {
 
     table.appendChild(headerRow);
 
-    for (let i = 1; i < lines.length; i++) {
-        const rowData = lines[i].split(',');
+    let index = 1;
+
+    function processRow() {
+        if (index >= lines.length) {
+            colorMap.appendChild(table);
+            return;
+        }
+
+        const rowData = lines[index].split(',');
         const row = document.createElement('tr');
         rowData.forEach(cell => {
             const td = document.createElement('td');
@@ -175,9 +188,12 @@ function updateColorMap() {
             row.appendChild(td);
         });
         table.appendChild(row);
+
+        index++;
+        requestAnimationFrame(processRow);
     }
 
-    colorMap.appendChild(table);
+    processRow();
 }
 
 function getColorForValue(value, min, max) {
