@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1CSVからColor Map New</title>
+    <title>CSVからColor Map New</title>
     <style>
         table {
             width: 100%;
@@ -48,15 +48,10 @@
             overflow: visible;
         }
 
-        #magnifier {
+        #selectionBox {
             position: absolute;
-            border: 3px solid black;
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-            overflow: hidden;
+            border: 2px dashed #000;
             pointer-events: none;
-            transform: scale(2); /* 拡大倍率 */
         }
     </style>
 </head>
@@ -103,6 +98,7 @@
     <button id="updateButton" class="large-button">カラーマップを更新</button>
     <button id="applyButton" class="large-button">適用</button>
     <button id="fullscreenButton" class="large-button">全体図を表示</button>
+    <button id="rangeSelectButton" class="large-button">範囲選択</button>
     
     <div id="colorMapContainer">
         <div id="colorMap"></div>
