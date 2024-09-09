@@ -3,8 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSVからColor Map</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>CSVからColor Map New</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 0.5px solid black;
+            padding: 5px;
+        }
+
+        .color-input {
+            margin: 2px;
+        }
+
+        .large-button {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 10px;
+        }
+
+        #colorMapContainer {
+            width: 100%;
+            max-height: 400px; /* ここでテーブルの最大高さを指定 */
+            overflow: auto; /* 内容が見切れた場合にスクロールできるように設定 */
+            border: 1px solid #000; /* 見やすくするために枠を付ける */
+        }
+
+        #colorMap {
+            width: 100%;
+            height: auto;
+        }
+
+        .fullscreen-table {
+            width: 100%;
+            height: 100%;
+            max-height: none;
+            overflow: visible;
+        }
+    </style>
 </head>
 <body>
     <input type="file" id="fileInput" accept=".csv">
@@ -21,7 +59,7 @@
         <div class="color-input">
             <label>11% - 20%  : <input type="number" id="range2" value="20" min="1" max="100"> <input type="color" id="color2" value="#f9b030"></label>
         </div>
-       　　　<div class="color-input">
+        <div class="color-input">
             <label>21% - 30%  : <input type="number" id="range3" value="30" min="1" max="100"> <input type="color" id="color3" value="#fcff33"></label>
         </div>
         <div class="color-input">
@@ -47,7 +85,9 @@
         </div>
     </div>
     <button id="updateButton" class="large-button">カラーマップを更新</button>
+    <button id="applyButton" class="large-button">適用</button>
     <button id="fullscreenButton" class="large-button">全体図を表示</button>
+    
     <div id="colorMapContainer">
         <div id="colorMap"></div>
     </div>
