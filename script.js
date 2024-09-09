@@ -1,19 +1,3 @@
-let globalData = null;
-let autoMinValue = Number.POSITIVE_INFINITY;
-let autoMaxValue = Number.NEGATIVE_INFINITY;
-
-document.getElementById('fileInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsText(file);
-
-    reader.onload = function() {
-        globalData = reader.result;
-        calculateMinMax();
-        updateColorMap();
-    };
-});
-
 document.getElementById('fullscreenButton').addEventListener('click', function() {
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=800,height=600');
@@ -27,127 +11,80 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     const tableContainer = document.getElementById('colorMap').cloneNode(true);
     colorMapContainer.appendChild(tableContainer);
 
-    const table = colorMapContainer.querySelector('table');
+    // 拡大鏡ボタンの作成
+    const magnifierButton = newWindow.document.createElement('button');
+    magnifierButton.textContent = '拡大鏡';
+    magnifierButton.style.fontSize = '16px';
+    magnifierButton.style.margin = '10px';
+    colorMapContainer.appendChild(magnifierButton);
 
     // テーブルの縮小（10分の1）
+    const table = colorMapContainer.querySelector('table');
     table.style.transform = 'scale(0.1)';
-    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
+    table.style.transformOrigin = 'top left';
 
     // スクロール可能にする
     colorMapContainer.style.overflow = 'auto';
 
-    // 必要に応じて追加のスタイルを設定
-    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
-});
+    // 拡大鏡機能の実装
+    let magnifierActive = false;
 
-document.getElementById('updateButton').addEventListener('click', function() {
-    updateColorMap();
-});
-
-document.getElementById('applyButton').addEventListener('click', function() {
-    const table = document.querySelector('table');
-    if (table) {
-        table.style.fontSize = '12px';  // フォントサイズを小さく設定
-    }
-});
-
-function calculateMinMax() {
-    if (!globalData) return;
-
-    const lines = globalData.split('\n');
-    for (let i = 1; i < lines.length; i++) {
-        const rowData = lines[i].split(',');
-        rowData.forEach(cell => {
-            const numericValue = parseFloat(cell);
-            if (!isNaN(numericValue)) {
-                if (numericValue < autoMinValue) autoMinValue = numericValue;
-                if (numericValue > autoMaxValue) autoMaxValue = numericValue;
-            }
-        });
-    }
-
-    document.getElementById('minValue').value = autoMinValue;
-    document.getElementById('maxValue').value = autoMaxValue;
-}
-
-function updateColorMap() {
-    if (!globalData) return;
-
-    const minValue = parseFloat(document.getElementById('minValue').value);
-    const maxValue = parseFloat(document.getElementById('maxValue').value);
-
-    const lines = globalData.split('\n');
-    const headers = lines[0].split(',');
-    const colorMap = document.getElementById('colorMap');
-    colorMap.innerHTML = '';
-
-    const table = document.createElement('table');
-    const headerRow = document.createElement('tr');
-
-    headers.forEach(header => {
-        const th = document.createElement('th');
-        th.textContent = header;
-        headerRow.appendChild(th);
+    magnifierButton.addEventListener('click', function() {
+        magnifierActive = !magnifierActive;
+        if (magnifierActive) {
+            newWindow.document.body.style.cursor = 'none'; // カーソルを隠す
+            activateMagnifier(newWindow, table);
+        } else {
+            newWindow.document.body.style.cursor = 'auto'; // カーソルを元に戻す
+            deactivateMagnifier(newWindow);
+        }
     });
 
-    table.appendChild(headerRow);
+    newWindow.document.close();
+});
 
-    for (let i = 1; i < lines.length; i++) {
-        const rowData = lines[i].split(',');
-        const row = document.createElement('tr');
-        rowData.forEach(cell => {
-            const td = document.createElement('td');
-            td.textContent = cell;
-            const numericValue = parseFloat(cell);
-            if (!isNaN(numericValue)) {
-                td.style.backgroundColor = getColorForValue(numericValue, minValue, maxValue);
-            }
-            row.appendChild(td);
-        });
-        table.appendChild(row);
-    }
+function activateMagnifier(newWindow, table) {
+    const magnifier = newWindow.document.createElement('div');
+    magnifier.id = 'magnifier';
+    magnifier.style.position = 'absolute';
+    magnifier.style.border = '3px solid #000';
+    magnifier.style.borderRadius = '50%';
+    magnifier.style.width = '150px';
+    magnifier.style.height = '150px';
+    magnifier.style.overflow = 'hidden';
+    magnifier.style.pointerEvents = 'none';
+    magnifier.style.transform = 'scale(2)'; // 拡大倍率
+    magnifier.style.background = '#fff';
+    newWindow.document.body.appendChild(magnifier);
 
-    colorMap.appendChild(table);
+    newWindow.addEventListener('mousemove', function(e) {
+        const mouseX = e.pageX;
+        const mouseY = e.pageY;
+        
+        // 拡大鏡の位置をマウスに追従させる
+        magnifier.style.left = `${mouseX - 75}px`; // 中心を合わせる
+        magnifier.style.top = `${mouseY - 75}px`;
+
+        // マウス位置に合わせてテーブルの拡大部分を表示
+        magnifier.style.background = `url(${generateTableSnapshot(table)})`;
+        magnifier.style.backgroundPosition = `-${mouseX * 2}px -${mouseY * 2}px`;
+    });
 }
 
-function getColorForValue(value, min, max) {
-    const ranges = [
-        parseFloat(document.getElementById('range1').value),
-        parseFloat(document.getElementById('range2').value),
-        parseFloat(document.getElementById('range3').value),
-        parseFloat(document.getElementById('range4').value),
-        parseFloat(document.getElementById('range5').value),
-        parseFloat(document.getElementById('range6').value),
-        parseFloat(document.getElementById('range7').value),
-        parseFloat(document.getElementById('range8').value),
-        parseFloat(document.getElementById('range9').value),
-        parseFloat(document.getElementById('range10').value)
-    ];
-
-    const colors = [
-        document.getElementById('color1').value,
-        document.getElementById('color2').value,
-        document.getElementById('color3').value,
-        document.getElementById('color4').value,
-        document.getElementById('color5').value,
-        document.getElementById('color6').value,
-        document.getElementById('color7').value,
-        document.getElementById('color8').value,
-        document.getElementById('color9').value,
-        document.getElementById('color10').value
-    ];
-
-    if (value <= min) {
-        return colors[0];
-    } else if (value > max) {
-        return colors[colors.length - 1];
-    } else {
-        const percentage = (value - min) / (max - min) * 100;
-        for (let i = 0; i < ranges.length; i++) {
-            if (percentage <= ranges[i]) {
-                return colors[i];
-            }
-        }
-        return colors[colors.length - 1];
+function deactivateMagnifier(newWindow) {
+    const magnifier = newWindow.document.getElementById('magnifier');
+    if (magnifier) {
+        magnifier.remove();
     }
+}
+
+function generateTableSnapshot(table) {
+    // テーブルのスナップショットを画像化
+    const canvas = document.createElement('canvas');
+    canvas.width = table.offsetWidth;
+    canvas.height = table.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(2, 2); // 拡大のためのスケーリング
+    ctx.drawImage(table, 0, 0);
+    return canvas.toDataURL();
 }
