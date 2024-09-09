@@ -9,7 +9,7 @@ th, td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 9px; /* 文字サイズを縮小 */
+    font-size: 10px; /* 文字サイズを縮小 */
 }
 
 .color-input {
@@ -20,29 +20,6 @@ th, td {
     font-size: 12px; /* 読みやすさを考慮してサイズを調整 */
     padding: 5px 10px; /* ボタンの押しやすさを考慮 */
     margin: 3px;
-}
-
-.min-value-cell {
-    position: relative;
-    z-index: 0; /* これによりセルのテキストが前に表示されます */
-}
-
-.min-value-cell::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    width: 150px;
-    height: 150px;
-    background-color: rgba(255, 0, 0, 0.3); /* 半透明の赤い円 */
-    border-radius: 50%;
-    border: 3px solid red;
-    z-index: -1; /* 円をテキストの背面に */
-}
-
-.min-value-cell span {
-    position: relative;
-    z-index: 1; /* テキストを円の前面に */
 }
 
 #colorMapContainer {
@@ -63,4 +40,3 @@ th, td {
     max-height: none;
     overflow: visible;
 }
-
