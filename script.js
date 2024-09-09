@@ -4,107 +4,30 @@ let autoMaxValue = Number.NEGATIVE_INFINITY;
 
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
-    
-    if (!file) {
-        console.log('ファイルが選択されていません。');
-        return;
-    }
-
     const reader = new FileReader();
     reader.readAsText(file);
 
     reader.onload = function() {
         globalData = reader.result;
-        calculateMinMax();  // 最小値・最大値の計算
-        updateColorMap();   // カラーマップの更新
-    };
-
-    reader.onerror = function() {
-        console.log('ファイルの読み込みに失敗しました。');
+        calculateMinMax();
+        updateColorMap();
     };
 });
 
 document.getElementById('fullscreenButton').addEventListener('click', function() {
-    // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=800,height=600');
-
-    // 新しいウィンドウにHTMLを追加
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
-
     const colorMapContainer = newWindow.document.body;
 
-    // コンテナを作成
     const tableContainer = document.getElementById('colorMap').cloneNode(true);
     colorMapContainer.appendChild(tableContainer);
-
-    // 拡大鏡ボタンの作成
-    const magnifierButton = newWindow.document.createElement('button');
-    magnifierButton.textContent = '拡大鏡';
-    magnifierButton.style.fontSize = '16px';
-    magnifierButton.style.margin = '10px';
-    colorMapContainer.appendChild(magnifierButton);
-
-    // テーブルの縮小（10分の1）
     const table = colorMapContainer.querySelector('table');
+
     table.style.transform = 'scale(0.1)';
-    table.style.transformOrigin = 'top left';
-
-    // スクロール可能にする
+    table.style.transformOrigin = 'top left'; 
     colorMapContainer.style.overflow = 'auto';
-
-    // 拡大鏡機能の実装
-    let magnifierActive = false;
-
-    magnifierButton.addEventListener('click', function() {
-        magnifierActive = !magnifierActive;
-        if (magnifierActive) {
-            newWindow.document.body.style.cursor = 'none'; // カーソルを隠す
-            activateMagnifier(newWindow, table);
-        } else {
-            newWindow.document.body.style.cursor = 'auto'; // カーソルを元に戻す
-            deactivateMagnifier(newWindow);
-        }
-    });
-
     newWindow.document.close();
 });
-
-function activateMagnifier(newWindow, table) {
-    const magnifier = newWindow.document.createElement('div');
-    magnifier.id = 'magnifier';
-    magnifier.style.position = 'absolute';
-    magnifier.style.pointerEvents = 'none'; // マウスイベントを無視
-    newWindow.document.body.appendChild(magnifier);
-
-    table.addEventListener('mousemove', function(e) {
-        const x = e.clientX;
-        const y = e.clientY;
-
-        magnifier.style.left = (x - 75) + 'px'; // 中心を合わせるために調整
-        magnifier.style.top = (y - 75) + 'px';
-        
-        // テーブルの内容を画像として描画し、拡大鏡に表示
-        html2canvas(table, { scale: 2 }).then(canvas => {
-            magnifier.innerHTML = '';
-            magnifier.appendChild(canvas);
-        });
-    });
-
-    table.addEventListener('mouseleave', function() {
-        magnifier.style.display = 'none';
-    });
-
-    table.addEventListener('mouseenter', function() {
-        magnifier.style.display = 'block';
-    });
-}
-
-function deactivateMagnifier(newWindow) {
-    const magnifier = newWindow.document.getElementById('magnifier');
-    if (magnifier) {
-        magnifier.remove();
-    }
-}
 
 document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
@@ -113,24 +36,118 @@ document.getElementById('updateButton').addEventListener('click', function() {
 document.getElementById('applyButton').addEventListener('click', function() {
     const table = document.querySelector('table');
     if (table) {
-        table.style.fontSize = '12px';  // フォントサイズを小さく設定
+        table.style.fontSize = '12px'; 
     }
 });
+
+document.getElementById('rangeSelectButton').addEventListener('click', function() {
+    isSelecting = !isSelecting;
+    if (isSelecting) {
+        document.getElementById('colorMap').addEventListener('mousedown', startSelection);
+        document.getElementById('colorMap').addEventListener('mousemove', updateSelection);
+        document.getElementById('colorMap').addEventListener('mouseup', endSelection);
+    } else {
+        document.getElementById('colorMap').removeEventListener('mousedown', startSelection);
+        document.getElementById('colorMap').removeEventListener('mousemove', updateSelection);
+        document.getElementById('colorMap').removeEventListener('mouseup', endSelection);
+        clearSelection();
+    }
+});
+
+let isSelecting = false;
+let startX, startY, endX, endY;
+
+function startSelection(e) {
+    if (!isSelecting) return;
+    startX = e.clientX;
+    startY = e.clientY;
+    document.getElementById('colorMap').style.cursor = 'crosshair';
+}
+
+function updateSelection(e) {
+    if (!isSelecting || startX === undefined || startY === undefined) return;
+    endX = e.clientX;
+    endY = e.clientY;
+    drawSelection();
+}
+
+function endSelection(e) {
+    if (!isSelecting || startX === undefined || startY === undefined) return;
+    endX = e.clientX;
+    endY = e.clientY;
+    showSelectedArea();
+    document.getElementById('colorMap').style.cursor = 'default';
+}
+
+function drawSelection() {
+    const colorMap = document.getElementById('colorMap');
+    const rect = colorMap.getBoundingClientRect();
+    const selectionBox = document.getElementById('selectionBox');
+
+    if (!selectionBox) {
+        const newBox = document.createElement('div');
+        newBox.id = 'selectionBox';
+        newBox.style.position = 'absolute';
+        newBox.style.border = '2px dashed #000';
+        colorMap.appendChild(newBox);
+    }
+
+    const selection = document.getElementById('selectionBox');
+    selection.style.left = `${Math.min(startX, endX) - rect.left}px`;
+    selection.style.top = `${Math.min(startY, endY) - rect.top}px`;
+    selection.style.width = `${Math.abs(endX - startX)}px`;
+    selection.style.height = `${Math.abs(endY - startY)}px`;
+}
+
+function clearSelection() {
+    const selectionBox = document.getElementById('selectionBox');
+    if (selectionBox) {
+        selectionBox.remove();
+    }
+}
+
+function showSelectedArea() {
+    const colorMap = document.getElementById('colorMap');
+    const rect = colorMap.getBoundingClientRect();
+    const selectionBox = document.getElementById('selectionBox');
+    
+    if (!selectionBox) return;
+    
+    const rectLeft = parseInt(selectionBox.style.left);
+    const rectTop = parseInt(selectionBox.style.top);
+    const rectWidth = parseInt(selectionBox.style.width);
+    const rectHeight = parseInt(selectionBox.style.height);
+
+    const newWindow = window.open('', '', 'width=800,height=600');
+    newWindow.document.write('<html><head><title>拡大表示</title></head><body></body></html>');
+    const newDocument = newWindow.document;
+
+    const originalTable = document.querySelector('#colorMap table');
+    if (originalTable) {
+        const tableClone = originalTable.cloneNode(true);
+        const tableWrapper = newDocument.createElement('div');
+        tableWrapper.style.position = 'relative';
+        tableWrapper.style.width = '300%';
+        tableWrapper.style.height = '300%';
+        tableWrapper.style.overflow = 'auto';
+        newDocument.body.appendChild(tableWrapper);
+        tableWrapper.appendChild(tableClone);
+
+        const scale = 3;  
+        tableClone.style.transform = `scale(${scale})`;
+        tableClone.style.transformOrigin = 'top left';
+        tableClone.style.position = 'absolute';
+        tableClone.style.left = `-${rectLeft * scale}px`;
+        tableClone.style.top = `-${rectTop * scale}px`;
+    }
+}
 
 function calculateMinMax() {
     if (!globalData) return;
 
     const lines = globalData.split('\n');
-    let index = 1;
-
-    function processLine() {
-        if (index >= lines.length) {
-            document.getElementById('minValue').value = autoMinValue;
-            document.getElementById('maxValue').value = autoMaxValue;
-            return;
-        }
-
-        const rowData = lines[index].split(',');
+    for (let i = 1; i < lines.length; i++) {
+        const rowData = lines[i].split(',');
         rowData.forEach(cell => {
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
@@ -138,12 +155,10 @@ function calculateMinMax() {
                 if (numericValue > autoMaxValue) autoMaxValue = numericValue;
             }
         });
-
-        index++;
-        requestAnimationFrame(processLine);
     }
 
-    processLine();
+    document.getElementById('minValue').value = autoMinValue;
+    document.getElementById('maxValue').value = autoMaxValue;
 }
 
 function updateColorMap() {
@@ -168,15 +183,8 @@ function updateColorMap() {
 
     table.appendChild(headerRow);
 
-    let index = 1;
-
-    function processRow() {
-        if (index >= lines.length) {
-            colorMap.appendChild(table);
-            return;
-        }
-
-        const rowData = lines[index].split(',');
+    for (let i = 1; i < lines.length; i++) {
+        const rowData = lines[i].split(',');
         const row = document.createElement('tr');
         rowData.forEach(cell => {
             const td = document.createElement('td');
@@ -188,12 +196,9 @@ function updateColorMap() {
             row.appendChild(td);
         });
         table.appendChild(row);
-
-        index++;
-        requestAnimationFrame(processRow);
     }
 
-    processRow();
+    colorMap.appendChild(table);
 }
 
 function getColorForValue(value, min, max) {
