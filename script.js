@@ -1,4 +1,6 @@
 let globalData = null;
+let autoMinValue = Number.POSITIVE_INFINITY;
+let autoMaxValue = Number.NEGATIVE_INFINITY;
 
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -7,56 +9,66 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
 
     reader.onload = function() {
         globalData = reader.result;
+        calculateMinMax();
         updateColorMap();
     };
 });
 
 document.getElementById('fullscreenButton').addEventListener('click', function() {
-    const newWindow = window.open('', '', 'width=1200,height=800');
+    // 新しいウィンドウを開く
+    const newWindow = window.open('', '', 'width=800,height=600');
+
+    // 新しいウィンドウにHTMLを追加
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
 
     const colorMapContainer = newWindow.document.body;
+
+    // コンテナを作成
     const tableContainer = document.getElementById('colorMap').cloneNode(true);
     colorMapContainer.appendChild(tableContainer);
 
     const table = colorMapContainer.querySelector('table');
-    table.style.width = '1000px';
-    table.style.height = 'auto';
 
+    // テーブルの縮小（10分の1）
+    table.style.transform = 'scale(0.1)';
+    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
+
+    // スクロール可能にする
     colorMapContainer.style.overflow = 'auto';
 
-    const lens = newWindow.document.createElement('div');
-    lens.id = 'zoomLens';
-    colorMapContainer.appendChild(lens);
-
-    const zoomImg = newWindow.document.createElement('img');
-    lens.appendChild(zoomImg);
-
-    html2canvas(table).then(canvas => {
-        zoomImg.src = canvas.toDataURL();
-    });
-
-    newWindow.document.addEventListener('mousemove', function(event) {
-        const rect = table.getBoundingClientRect();
-        const mouseX = event.clientX;
-        const mouseY = event.clientY;
-
-        if (mouseX > rect.left && mouseX < rect.right && mouseY > rect.top && mouseY < rect.bottom) {
-            lens.style.display = 'block';
-            lens.style.left = (mouseX - lens.offsetWidth / 2) + 'px';
-            lens.style.top = (mouseY - lens.offsetHeight / 2) + 'px';
-
-            const zoomLevel = 2;
-            zoomImg.style.transform = `scale(${zoomLevel})`;
-            zoomImg.style.left = -((mouseX - rect.left) * zoomLevel - lens.offsetWidth / 2) + 'px';
-            zoomImg.style.top = -((mouseY - rect.top) * zoomLevel - lens.offsetHeight / 2) + 'px';
-        } else {
-            lens.style.display = 'none';
-        }
-    });
-
-    newWindow.document.close();
+    // 必要に応じて追加のスタイルを設定
+    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
 });
+
+document.getElementById('updateButton').addEventListener('click', function() {
+    updateColorMap();
+});
+
+document.getElementById('applyButton').addEventListener('click', function() {
+    const table = document.querySelector('table');
+    if (table) {
+        table.style.fontSize = '12px';  // フォントサイズを小さく設定
+    }
+});
+
+function calculateMinMax() {
+    if (!globalData) return;
+
+    const lines = globalData.split('\n');
+    for (let i = 1; i < lines.length; i++) {
+        const rowData = lines[i].split(',');
+        rowData.forEach(cell => {
+            const numericValue = parseFloat(cell);
+            if (!isNaN(numericValue)) {
+                if (numericValue < autoMinValue) autoMinValue = numericValue;
+                if (numericValue > autoMaxValue) autoMaxValue = numericValue;
+            }
+        });
+    }
+
+    document.getElementById('minValue').value = autoMinValue;
+    document.getElementById('maxValue').value = autoMaxValue;
+}
 
 function updateColorMap() {
     if (!globalData) return;
@@ -99,15 +111,43 @@ function updateColorMap() {
 }
 
 function getColorForValue(value, min, max) {
-    const colors = ['#ff2e2e', '#f9b030', '#fcff33', '#87fb28', '#00db04', '#2effaf', '#13ecdd', '#0084ff', '#0062ff', '#0000ff'];
-    const range = (max - min) / (colors.length - 1);
-    
+    const ranges = [
+        parseFloat(document.getElementById('range1').value),
+        parseFloat(document.getElementById('range2').value),
+        parseFloat(document.getElementById('range3').value),
+        parseFloat(document.getElementById('range4').value),
+        parseFloat(document.getElementById('range5').value),
+        parseFloat(document.getElementById('range6').value),
+        parseFloat(document.getElementById('range7').value),
+        parseFloat(document.getElementById('range8').value),
+        parseFloat(document.getElementById('range9').value),
+        parseFloat(document.getElementById('range10').value)
+    ];
+
+    const colors = [
+        document.getElementById('color1').value,
+        document.getElementById('color2').value,
+        document.getElementById('color3').value,
+        document.getElementById('color4').value,
+        document.getElementById('color5').value,
+        document.getElementById('color6').value,
+        document.getElementById('color7').value,
+        document.getElementById('color8').value,
+        document.getElementById('color9').value,
+        document.getElementById('color10').value
+    ];
+
     if (value <= min) {
         return colors[0];
-    } else if (value >= max) {
+    } else if (value > max) {
         return colors[colors.length - 1];
     } else {
-        const index = Math.floor((value - min) / range);
-        return colors[index];
+        const percentage = (value - min) / (max - min) * 100;
+        for (let i = 0; i < ranges.length; i++) {
+            if (percentage <= ranges[i]) {
+                return colors[i];
+            }
+        }
+        return colors[colors.length - 1];
     }
 }
