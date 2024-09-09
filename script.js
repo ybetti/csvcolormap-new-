@@ -101,6 +101,9 @@ function updateColorMap() {
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
                 td.style.backgroundColor = getColorForValue(numericValue, minValue, maxValue);
+                if (numericValue === minValue) {
+                    td.classList.add('min-value-marker');
+                }
             }
             row.appendChild(td);
         });
