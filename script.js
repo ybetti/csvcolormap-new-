@@ -97,13 +97,20 @@ function updateColorMap() {
         const row = document.createElement('tr');
         rowData.forEach(cell => {
             const td = document.createElement('td');
-            td.textContent = cell;
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
                 td.style.backgroundColor = getColorForValue(numericValue, minValue, maxValue);
                 if (numericValue === minValue) {
-                    td.classList.add('min-value-marker');
+                    // 最小値のセルに円を適用するクラスを追加
+                    td.classList.add('min-value-cell');
+                    const span = document.createElement('span');
+                    span.textContent = numericValue; // 数値を表示
+                    td.appendChild(span); // 数値を追加
+                } else {
+                    td.textContent = numericValue;
                 }
+            } else {
+                td.textContent = cell;
             }
             row.appendChild(td);
         });
