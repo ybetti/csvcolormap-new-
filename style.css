@@ -24,7 +24,7 @@ th, td {
 
 .min-value-cell {
     position: relative;
-    z-index: 1; /* これによりセルのテキストが前に表示されます */
+    z-index: 0; /* これによりセルのテキストが前に表示されます */
 }
 
 .min-value-cell::before {
@@ -37,7 +37,7 @@ th, td {
     background-color: rgba(255, 0, 0, 0.3); /* 半透明の赤い円 */
     border-radius: 50%;
     border: 3px solid red;
-    z-index: 2; /* 円をテキストの背面に */
+    z-index: -1; /* 円をテキストの背面に */
 }
 
 .min-value-cell span {
