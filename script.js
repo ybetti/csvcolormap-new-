@@ -1,7 +1,6 @@
 let globalData = null;
 let autoMinValue = Number.POSITIVE_INFINITY;
 let autoMaxValue = Number.NEGATIVE_INFINITY;
-let minCellCoordinates = { row: -1, col: -1 };  // 最小値のセル位置を保存するための変数
 
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -17,89 +16,55 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
 
 document.getElementById('fullscreenButton').addEventListener('click', function() {
     // 新しいウィンドウを開く
-    const newWindow = window.open('', '', 'width=1200,height=800');
-    
-    if (newWindow) {
-        console.log('新しいウィンドウが正常に開きました');
+    const newWindow = window.open('', '', 'width=800,height=600');
 
-        // 新しいウィンドウにHTMLを追加
-        newWindow.document.write(`
-            <html>
-                <head>
-                    <title>全体図</title>
-                    <style>
-                        table {
-                            width: 100%;
-                            table-layout: fixed;
-                            transform-origin: top left;
-                        }
-                        th, td {
-                            width: auto;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            white-space: nowrap;
-                            font-size: 10px;
-                        }
-                        .fullscreen-table {
-                            width: 100%;
-                            height: 100%;
-                            max-height: none;
-                            overflow: auto;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="fullscreen-table" id="fullscreenTableContainer"></div>
-                </body>
-            </html>
-        `);
+    // 新しいウィンドウにHTMLを追加
+    newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
 
-        // 新しいウィンドウのコンテナにテーブルを追加
-        const newColorMapContainer = newWindow.document.getElementById('fullscreenTableContainer');
-        if (newColorMapContainer) {
-            const table = document.getElementById('colorMap').cloneNode(true);
-            newColorMapContainer.appendChild(table);
-            console.log('テーブルが新しいウィンドウに追加されました');
-            
-            // テーブルの縮小（10分の1）
-            table.style.transform = 'scale(0.1)';
-            table.style.transformOrigin = 'top left';
-        } else {
-            console.error('新しいウィンドウのコンテナが見つかりません');
-        }
+    const colorMapContainer = newWindow.document.body;
 
-        // 必要に応じて追加のスタイルを設定
-        newWindow.document.close(); // 新しいウィンドウの書き込みを終了
-    } else {
-        console.error('新しいウィンドウを開くことができませんでした');
-    }
+    // コンテナを作成
+    const tableContainer = document.getElementById('colorMap').cloneNode(true);
+    colorMapContainer.appendChild(tableContainer);
+
+    const table = colorMapContainer.querySelector('table');
+
+    // テーブルの縮小（10分の1）
+    table.style.transform = 'scale(0.1)';
+    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
+
+    // スクロール可能にする
+    colorMapContainer.style.overflow = 'auto';
+
+    // 必要に応じて追加のスタイルを設定
+    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
 });
 
+document.getElementById('updateButton').addEventListener('click', function() {
+    updateColorMap();
+});
 
+document.getElementById('applyButton').addEventListener('click', function() {
+    const table = document.querySelector('table');
+    if (table) {
+        table.style.fontSize = '12px';  // フォントサイズを小さく設定
+    }
+});
 
 function calculateMinMax() {
     if (!globalData) return;
 
     const lines = globalData.split('\n');
-    minCellCoordinates = { row: -1, col: -1 };  // 初期化
-    autoMinValue = Number.POSITIVE_INFINITY;
-    autoMaxValue = Number.NEGATIVE_INFINITY;
-
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
-        rowData.forEach((cell, j) => {
+        rowData.forEach(cell => {
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
-                if (numericValue < autoMinValue) {
-                    autoMinValue = numericValue;
-                    minCellCoordinates = { row: i, col: j };  // 最小値のセルの位置を保存
-                }
+                if (numericValue < autoMinValue) autoMinValue = numericValue;
                 if (numericValue > autoMaxValue) autoMaxValue = numericValue;
             }
         });
     }
-
-    console.log('最小値のセル座標:', minCellCoordinates);  // デバッグ用ログ
 
     document.getElementById('minValue').value = autoMinValue;
     document.getElementById('maxValue').value = autoMaxValue;
@@ -130,19 +95,13 @@ function updateColorMap() {
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
         const row = document.createElement('tr');
-        rowData.forEach((cell, j) => {
+        rowData.forEach(cell => {
             const td = document.createElement('td');
             td.textContent = cell;
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
                 td.style.backgroundColor = getColorForValue(numericValue, minValue, maxValue);
             }
-
-            // 最小値のセルの場合、ピンク色の枠をつける
-            if (i === minCellCoordinates.row && j === minCellCoordinates.col) {
-                td.classList.add('min-cell');
-            }
-
             row.appendChild(td);
         });
         table.appendChild(row);
