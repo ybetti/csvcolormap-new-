@@ -92,6 +92,9 @@ function updateColorMap() {
 
     table.appendChild(headerRow);
 
+    let minCell = null;
+    let minCellValue = Number.POSITIVE_INFINITY;
+
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
         const row = document.createElement('tr');
@@ -101,10 +104,21 @@ function updateColorMap() {
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
                 td.style.backgroundColor = getColorForValue(numericValue, minValue, maxValue);
+                
+                // 最小値のセルを特定
+                if (numericValue < minCellValue) {
+                    minCellValue = numericValue;
+                    minCell = td;
+                }
             }
             row.appendChild(td);
         });
         table.appendChild(row);
+    }
+
+    if (minCell) {
+        // 最小値のセルにクラスを追加
+        minCell.classList.add('min-value-cell');
     }
 
     colorMap.appendChild(table);
