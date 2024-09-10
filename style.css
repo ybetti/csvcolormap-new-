@@ -41,7 +41,6 @@ th, td {
     overflow: visible;
 }
 
-/* 最小値のセルにピンク色の枠をつけるスタイル */
 .min-cell {
     border: 30px solid pink;
 }
