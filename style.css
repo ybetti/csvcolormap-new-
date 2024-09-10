@@ -43,5 +43,5 @@ th, td {
 
 /* 最小値のセルにピンク色の枠をつけるスタイル */
 .min-cell {
-    border: 3px solid pink;
+    border: 30px solid pink;
 }
