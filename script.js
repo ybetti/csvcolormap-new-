@@ -15,6 +15,56 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     };
 });
 
+document.getElementById('fullscreenButton').addEventListener('click', function() {
+    // 新しいウィンドウを開く
+    const newWindow = window.open('', '', 'width=1200,height=800');
+
+    // 新しいウィンドウにHTMLを追加
+    newWindow.document.write(`
+        <html>
+            <head>
+                <title>全体図</title>
+                <style>
+                    table {
+                        width: 100%;
+                        table-layout: fixed;
+                        transform-origin: top left;
+                    }
+                    th, td {
+                        width: auto;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        font-size: 10px;
+                    }
+                    .fullscreen-table {
+                        width: 100%;
+                        height: 100%;
+                        max-height: none;
+                        overflow: auto;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="fullscreen-table" id="fullscreenTableContainer"></div>
+            </body>
+        </html>
+    `);
+
+    // 新しいウィンドウのコンテナにテーブルを追加
+    const newColorMapContainer = newWindow.document.getElementById('fullscreenTableContainer');
+    const table = document.getElementById('colorMap').cloneNode(true);
+    newColorMapContainer.appendChild(table);
+
+    // テーブルの縮小（10分の1）
+    table.style.transform = 'scale(0.1)';
+    table.style.transformOrigin = 'top left';
+
+    // 必要に応じて追加のスタイルを設定
+    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
+});
+
+
 function calculateMinMax() {
     if (!globalData) return;
 
