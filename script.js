@@ -151,3 +151,4 @@ function getColorForValue(value, min, max) {
         return colors[colors.length - 1];
     }
 }
+
