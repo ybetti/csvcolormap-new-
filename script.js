@@ -37,6 +37,8 @@ function calculateMinMax() {
         });
     }
 
+    console.log('最小値のセル座標:', minCellCoordinates);  // デバッグ用ログ
+
     document.getElementById('minValue').value = autoMinValue;
     document.getElementById('maxValue').value = autoMaxValue;
 }
