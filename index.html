@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5CSVからColor Map New</title>
+    <title>6CSVからColor Map New</title>
     <style>
         table {
             border-collapse: collapse;
@@ -26,9 +26,9 @@
 
         #colorMapContainer {
             width: 100%;
-            max-height: 400px;
-            overflow: auto;
-            border: 1px solid #000;
+            max-height: 400px; /* ここでテーブルの最大高さを指定 */
+            overflow: auto; /* 内容が見切れた場合にスクロールできるように設定 */
+            border: 1px solid #000; /* 見やすくするために枠を付ける */
         }
 
         #colorMap {
@@ -41,13 +41,6 @@
             height: 100%;
             max-height: none;
             overflow: visible;
-        }
-
-        /* 矢印描画用のcanvas */
-        #arrowCanvas {
-            position: absolute;
-            pointer-events: none;
-            z-index: 10; /* テーブルの上に表示 */
         }
     </style>
 </head>
@@ -94,15 +87,13 @@
     <button id="updateButton" class="large-button">カラーマップを更新</button>
     <button id="applyButton" class="large-button">適用</button>
     <button id="fullscreenButton" class="large-button">全体図を表示</button>
-
+    
     <div id="colorMapContainer">
         <div id="colorMap"></div>
     </div>
 
-    <!-- 矢印を描画するcanvas -->
-    <canvas id="arrowCanvas"></canvas>
-
-    <!-- JavaScriptファイルを読み込む -->
+    <!-- html2canvasライブラリの追加 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
