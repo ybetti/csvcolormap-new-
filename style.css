@@ -41,24 +41,7 @@ th, td {
     overflow: visible;
 }
 
-.min-value-cell {
-    position: relative;
-}
-
-.min-value-cell {
-    position: relative; /* セル自体を基準に擬似要素を配置 */
-    z-index: 1; /* 他の要素より前面に配置 */
-}
-
-.min-value-cell::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border: 2px solid black;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 10; /* 擬似要素を最前面に配置 */
+/* 最小値のセルにピンク色の枠をつけるスタイル */
+.min-cell {
+    border: 3px solid pink;
 }
