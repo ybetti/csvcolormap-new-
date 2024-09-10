@@ -40,3 +40,19 @@ th, td {
     max-height: none;
     overflow: visible;
 }
+
+.min-value-cell {
+    position: relative;
+}
+
+.min-value-cell::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid red;
+    border-radius: 50%;
+    pointer-events: none; /* クリック操作を妨げないようにする */
+}
