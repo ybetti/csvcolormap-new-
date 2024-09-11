@@ -187,3 +187,52 @@ document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
     findMinValueCell(); // カラーマップ更新後に最小値のセルを強調表示
 });
+
+function findTop3MinValueCells() {
+    if (!globalData) return;
+
+    const lines = globalData.split('\n');
+    const minCells = [];
+
+    // 全ての数値をチェックして、行・列・値を格納
+    for (let i = 1; i < lines.length; i++) {
+        const rowData = lines[i].split(',');
+        rowData.forEach((cell, colIndex) => {
+            const numericValue = parseFloat(cell);
+            if (!isNaN(numericValue)) {
+                minCells.push({ value: numericValue, row: i, col: colIndex });
+            }
+        });
+    }
+
+    // 値の小さい順にソート
+    minCells.sort((a, b) => a.value - b.value);
+
+    // 最小値トップ3を取得（配列が3未満の場合はあるだけ取得）
+    const top3MinCells = minCells.slice(0, 3);
+
+    // 最小値トップ3のセルを強調表示
+    const tableRows = document.querySelectorAll('#colorMap table tr');
+    top3MinCells.forEach((cellData, index) => {
+        const row = tableRows[cellData.row];
+        if (row) {
+            const targetCell = row.children[cellData.col];
+            if (index === 0) {
+                targetCell.style.border = '15px solid black'; // 最も小さい値を赤枠で強調表示
+                targetCell.style.backgroundColor = '#ffcccc';
+            } else if (index === 1) {
+                targetCell.style.border = '15px solid orange'; // 2番目をオレンジ枠で強調表示
+                targetCell.style.backgroundColor = '#ffe5cc';
+            } else if (index === 2) {
+                targetCell.style.border = '15px solid purple'; // 3番目を黄色枠で強調表示
+                targetCell.style.backgroundColor = '#ffffcc';
+            }
+        }
+    });
+}
+
+document.getElementById('updateButton').addEventListener('click', function() {
+    updateColorMap();
+    findTop3MinValueCells(); // カラーマップ更新後にトップ3の最小値のセルを強調表示
+});
+
