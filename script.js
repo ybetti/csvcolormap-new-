@@ -178,7 +178,7 @@ function findMinValueCell() {
     const tableRows = document.querySelectorAll('#colorMap table tr');
     if (tableRows[minRow]) {
         const targetCell = tableRows[minRow].children[minCol];
-        targetCell.style.border = '3px solid red'; // 最小値のセルを赤枠で囲む
+        targetCell.style.border = '15px solid black'; // 最小値のセルを赤枠で囲む
         targetCell.style.backgroundColor = '#ffcccc'; // 背景色も変更
     }
 }
