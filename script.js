@@ -152,3 +152,38 @@ function getColorForValue(value, min, max) {
     }
 }
 
+function findMinValueCell() {
+    if (!globalData) return;
+
+    const lines = globalData.split('\n');
+    let minValue = Number.POSITIVE_INFINITY;
+    let minCell = null;
+    let minRow = -1;
+    let minCol = -1;
+
+    // 最小値を探す
+    for (let i = 1; i < lines.length; i++) {
+        const rowData = lines[i].split(',');
+        rowData.forEach((cell, colIndex) => {
+            const numericValue = parseFloat(cell);
+            if (!isNaN(numericValue) && numericValue < minValue) {
+                minValue = numericValue;
+                minRow = i;
+                minCol = colIndex;
+            }
+        });
+    }
+
+    // 最小値のセルを強調表示する
+    const tableRows = document.querySelectorAll('#colorMap table tr');
+    if (tableRows[minRow]) {
+        const targetCell = tableRows[minRow].children[minCol];
+        targetCell.style.border = '3px solid red'; // 最小値のセルを赤枠で囲む
+        targetCell.style.backgroundColor = '#ffcccc'; // 背景色も変更
+    }
+}
+
+document.getElementById('updateButton').addEventListener('click', function() {
+    updateColorMap();
+    findMinValueCell(); // カラーマップ更新後に最小値のセルを強調表示
+});
