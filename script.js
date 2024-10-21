@@ -108,7 +108,12 @@ function updateColorMap() {
     }
 
     colorMap.appendChild(table);
+
+    // テーブルを縮小
+    table.style.transform = 'scale(0.1)';
+    table.style.transformOrigin = 'top left';
 }
+
 
 function getColorForValue(value, min, max) {
     const ranges = [
