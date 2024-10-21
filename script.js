@@ -15,69 +15,39 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
 });
 
 document.getElementById('fullscreenButton').addEventListener('click', function() {
+    // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=800,height=600');
+
+    // 新しいウィンドウにHTMLを追加
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
 
     const colorMapContainer = newWindow.document.body;
+
+    // コンテナを作成
     const tableContainer = document.getElementById('colorMap').cloneNode(true);
     colorMapContainer.appendChild(tableContainer);
 
     const table = colorMapContainer.querySelector('table');
+
+    // テーブルの縮小（10分の1）
     table.style.transform = 'scale(0.1)';
-    table.style.transformOrigin = 'top left'; 
+    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
+
+    // スクロール可能にする
     colorMapContainer.style.overflow = 'auto';
-    newWindow.document.close();
 
-    // クリックイベントを追加
-    table.addEventListener('click', function(event) {
-        const target = event.target;
-        if (target.tagName === 'TD') {
-            const cellIndex = target.cellIndex;
-            const rowIndex = target.parentNode.rowIndex;
-            const rows = table.querySelectorAll('tr');
-
-            const detailWindow = window.open('', '', 'width=400,height=300');
-            detailWindow.document.write('<html><head><title>詳細情報</title></head><body><h3>クリックしたセルの付近情報</h3></body></html>');
-            detailWindow.document.close();
-            
-            const detailBody = detailWindow.document.body;
-            const infoTable = detailWindow.document.createElement('table');
-            infoTable.style.border = '1px solid black';
-            infoTable.style.marginTop = '10px';
-
-            for (let i = rowIndex - 1; i <= rowIndex + 1; i++) {
-                if (i >= 1 && i < rows.length) {
-                    const row = detailWindow.document.createElement('tr');
-                    const cells = rows[i].children;
-
-                    for (let j = cellIndex - 1; j <= cellIndex + 1; j++) {
-                        if (j >= 0 && j < cells.length) {
-                            const cell = detailWindow.document.createElement('td');
-                            cell.textContent = cells[j].textContent;
-                            cell.style.border = '1px solid black';
-                            cell.style.padding = '5px';
-                            cell.style.backgroundColor = cells[j].style.backgroundColor;  
-                            row.appendChild(cell);
-                        }
-                    }
-                    infoTable.appendChild(row);
-                }
-            }
-
-            detailBody.appendChild(infoTable);
-        }
-    });
+    // 必要に応じて追加のスタイルを設定
+    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
 });
 
 document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
-    findMinValueCell(); 
 });
 
 document.getElementById('applyButton').addEventListener('click', function() {
     const table = document.querySelector('table');
     if (table) {
-        table.style.fontSize = '12px';  
+        table.style.fontSize = '12px';  // フォントサイズを小さく設定
     }
 });
 
@@ -191,6 +161,7 @@ function findMinValueCell() {
     let minRow = -1;
     let minCol = -1;
 
+    // 最小値を探す
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
         rowData.forEach((cell, colIndex) => {
@@ -203,49 +174,64 @@ function findMinValueCell() {
         });
     }
 
+    // 最小値のセルを強調表示する
     const tableRows = document.querySelectorAll('#colorMap table tr');
     if (tableRows[minRow]) {
         const targetCell = tableRows[minRow].children[minCol];
-        targetCell.style.border = '15px solid black'; 
-        targetCell.style.backgroundColor = '#ffcccc'; 
+        targetCell.style.border = '15px solid black'; // 最小値のセルを赤枠で囲む
+        targetCell.style.backgroundColor = '#ffcccc'; // 背景色も変更
     }
 }
 
+document.getElementById('updateButton').addEventListener('click', function() {
+    updateColorMap();
+    findMinValueCell(); // カラーマップ更新後に最小値のセルを強調表示
+});
+
 function findTop3MinValueCells() {
-    if (!globalData) return [];
+    if (!globalData) return;
 
     const lines = globalData.split('\n');
-    const minValues = [];
+    const minCells = [];
 
+    // 全ての数値をチェックして、行・列・値を格納
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
-        rowData.forEach((cell) => {
+        rowData.forEach((cell, colIndex) => {
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue)) {
-                minValues.push({ value: numericValue, row: i, col: rowData.indexOf(cell) });
+                minCells.push({ value: numericValue, row: i, col: colIndex });
             }
         });
     }
 
-    minValues.sort((a, b) => a.value - b.value);
-    return minValues.slice(0, 3); // 上位3つの最小値を返す
+    // 値の小さい順にソート
+    minCells.sort((a, b) => a.value - b.value);
+
+    // 最小値トップ3を取得（配列が3未満の場合はあるだけ取得）
+    const top3MinCells = minCells.slice(0, 3);
+
+    // 最小値トップ3のセルを強調表示
+    const tableRows = document.querySelectorAll('#colorMap table tr');
+    top3MinCells.forEach((cellData, index) => {
+        const row = tableRows[cellData.row];
+        if (row) {
+            const targetCell = row.children[cellData.col];
+            if (index === 0) {
+                targetCell.style.border = '15px solid black'; // 最も小さい値を赤枠で強調表示
+                targetCell.style.backgroundColor = '#ffcccc';
+            } else if (index === 1) {
+                targetCell.style.border = '15px solid orange'; // 2番目をオレンジ枠で強調表示
+                targetCell.style.backgroundColor = '#ffe5cc';
+            } else if (index === 2) {
+                targetCell.style.border = '15px solid purple'; // 3番目を黄色枠で強調表示
+                targetCell.style.backgroundColor = '#ffffcc';
+            }
+        }
+    });
 }
 
-document.getElementById('highlightTop3Button').addEventListener('click', function() {
-    const top3Cells = findTop3MinValueCells();
-    const tableRows = document.querySelectorAll('#colorMap table tr');
-
-    // 最初にすべてのスタイルをリセット
-    tableRows.forEach(row => {
-        Array.from(row.children).forEach(cell => {
-            cell.style.border = '';
-            cell.style.backgroundColor = ''; // 背景色をリセット
-        });
-    });
-
-    top3Cells.forEach(cellInfo => {
-        const targetCell = tableRows[cellInfo.row].children[cellInfo.col];
-        targetCell.style.border = '15px solid blue'; // セルを青枠で囲む
-        targetCell.style.backgroundColor = '#ccccff'; // 背景色も変更
-    });
+document.getElementById('updateButton').addEventListener('click', function() {
+    updateColorMap();
+    findTop3MinValueCells(); // カラーマップ更新後にトップ3の最小値のセルを強調表示
 });
