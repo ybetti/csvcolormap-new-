@@ -262,35 +262,38 @@ function displaySurroundingValues(row, col) {
     const lines = globalData.split('\n');
     const surroundingValues = [];
 
-    // 周囲のセルの範囲を指定（-2から2までの範囲）
+    // 5×5の範囲を指定
     for (let r = row - 2; r <= row + 2; r++) {
         if (r < 1 || r >= lines.length) continue; // 行範囲のチェック
         const rowData = lines[r].split(',');
+        const rowValues = [];
         for (let c = col - 2; c <= col + 2; c++) {
-            if (c < 0 || c >= rowData.length) continue; // 列範囲のチェック
-            const numericValue = parseFloat(rowData[c]);
-            const cellBackgroundColor = document.querySelector(`#colorMap table tr:nth-child(${r + 1}) td:nth-child(${c + 1})`).style.backgroundColor;
-
-            if (!isNaN(numericValue)) {
-                surroundingValues.push({
-                    value: numericValue,
-                    backgroundColor: cellBackgroundColor
-                });
+            if (c < 0 || c >= rowData.length) {
+                rowValues.push('ND'); // 範囲外の場合は'ND'を表示
+            } else {
+                const numericValue = parseFloat(rowData[c]);
+                rowValues.push(isNaN(numericValue) ? 'ND' : numericValue);
             }
         }
+        surroundingValues.push(rowValues);
     }
-
-    console.log(`Surrounding Values: ${surroundingValues.map(val => val.value).join(', ')}`); // デバッグ情報
 
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=400,height=300');
     newWindow.document.write('<html><head><title>周囲の数値</title></head><body>');
     newWindow.document.write('<h1>周囲の数値</h1>');
-
-    surroundingValues.forEach(({ value, backgroundColor }) => {
-        newWindow.document.write(`<div style="background-color: ${backgroundColor}; padding: 5px;">${value}</div>`);
+    
+    // 5×5のテーブルを作成
+    newWindow.document.write('<table border="1" style="border-collapse: collapse;">');
+    surroundingValues.forEach(row => {
+        newWindow.document.write('<tr>');
+        row.forEach(value => {
+            newWindow.document.write(`<td style="padding: 5px; text-align: center;">${value}</td>`);
+        });
+        newWindow.document.write('</tr>');
     });
-
+    newWindow.document.write('</table>');
+    
     newWindow.document.write('</body></html>');
     newWindow.document.close(); // 新しいウィンドウの書き込みを終了
 }
