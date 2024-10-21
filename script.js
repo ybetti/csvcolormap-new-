@@ -15,45 +15,33 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
 });
 
 document.getElementById('fullscreenButton').addEventListener('click', function() {
-    // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=800,height=600');
-
-    // 新しいウィンドウにHTMLを追加
     newWindow.document.write('<html><head><title>全体図</title></head><body></body></html>');
-
     const colorMapContainer = newWindow.document.body;
-
-    // コンテナを作成
     const tableContainer = document.getElementById('colorMap').cloneNode(true);
     colorMapContainer.appendChild(tableContainer);
-
     const table = colorMapContainer.querySelector('table');
-
-    // テーブルの縮小（10分の1）
     table.style.transform = 'scale(0.1)';
-    table.style.transformOrigin = 'top left'; // 縮小の起点を左上に設定
-
-    // スクロール可能にする
+    table.style.transformOrigin = 'top left';
     colorMapContainer.style.overflow = 'auto';
-
-    // 必要に応じて追加のスタイルを設定
-    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
+    newWindow.document.close();
 });
 
 document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
+    findMinValueCell();
+    findTop3MinValueCells();
 });
 
 document.getElementById('applyButton').addEventListener('click', function() {
     const table = document.querySelector('table');
     if (table) {
-        table.style.fontSize = '12px';  // フォントサイズを小さく設定
+        table.style.fontSize = '12px';
     }
 });
 
 function calculateMinMax() {
     if (!globalData) return;
-
     const lines = globalData.split('\n');
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
@@ -65,7 +53,6 @@ function calculateMinMax() {
             }
         });
     }
-
     document.getElementById('minValue').value = autoMinValue;
     document.getElementById('maxValue').value = autoMaxValue;
 }
@@ -75,7 +62,6 @@ function updateColorMap() {
 
     const minValue = parseFloat(document.getElementById('minValue').value);
     const maxValue = parseFloat(document.getElementById('maxValue').value);
-
     const lines = globalData.split('\n');
     const headers = lines[0].split(',');
     const colorMap = document.getElementById('colorMap');
@@ -89,7 +75,6 @@ function updateColorMap() {
         th.textContent = header;
         headerRow.appendChild(th);
     });
-
     table.appendChild(headerRow);
 
     for (let i = 1; i < lines.length; i++) {
@@ -161,7 +146,6 @@ function findMinValueCell() {
     let minRow = -1;
     let minCol = -1;
 
-    // 最小値を探す
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
         rowData.forEach((cell, colIndex) => {
@@ -174,19 +158,13 @@ function findMinValueCell() {
         });
     }
 
-    // 最小値のセルを強調表示する
     const tableRows = document.querySelectorAll('#colorMap table tr');
     if (tableRows[minRow]) {
         const targetCell = tableRows[minRow].children[minCol];
-        targetCell.style.border = '15px solid black'; // 最小値のセルを赤枠で囲む
-        targetCell.style.backgroundColor = '#ffcccc'; // 背景色も変更
+        targetCell.style.border = '15px solid black';
+        targetCell.style.backgroundColor = '#ffcccc';
     }
 }
-
-document.getElementById('updateButton').addEventListener('click', function() {
-    updateColorMap();
-    findMinValueCell(); // カラーマップ更新後に最小値のセルを強調表示
-});
 
 function findTop3MinValueCells() {
     if (!globalData) return;
@@ -194,7 +172,6 @@ function findTop3MinValueCells() {
     const lines = globalData.split('\n');
     const minCells = [];
 
-    // 全ての数値をチェックして、行・列・値を格納
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
         rowData.forEach((cell, colIndex) => {
@@ -205,58 +182,46 @@ function findTop3MinValueCells() {
         });
     }
 
-    // 値の小さい順にソート
     minCells.sort((a, b) => a.value - b.value);
-
-    // 最小値トップ3を取得（配列が3未満の場合はあるだけ取得）
     const top3MinCells = minCells.slice(0, 3);
-
-    // 最小値トップ3のセルを強調表示
     const tableRows = document.querySelectorAll('#colorMap table tr');
     top3MinCells.forEach((cellData, index) => {
         const row = tableRows[cellData.row];
         if (row) {
             const targetCell = row.children[cellData.col];
             if (index === 0) {
-                targetCell.style.border = '15px solid black'; // 最も小さい値を赤枠で強調表示
+                targetCell.style.border = '15px solid black';
                 targetCell.style.backgroundColor = '#ffcccc';
             } else if (index === 1) {
-                targetCell.style.border = '15px solid orange'; // 2番目をオレンジ枠で強調表示
+                targetCell.style.border = '15px solid orange';
                 targetCell.style.backgroundColor = '#ffe5cc';
             } else if (index === 2) {
-                targetCell.style.border = '15px solid purple'; // 3番目を黄色枠で強調表示
+                targetCell.style.border = '15px solid purple';
                 targetCell.style.backgroundColor = '#ffffcc';
             }
         }
     });
 }
 
-document.getElementById('updateButton').addEventListener('click', function() {
-    updateColorMap();
-    findTop3MinValueCells(); // カラーマップ更新後にトップ3の最小値のセルを強調表示
-});
+// セルクリック時に周囲の詳細情報を表示する機能を追加
 document.getElementById('colorMap').addEventListener('click', function(event) {
     const target = event.target;
     if (target.tagName === 'TD') {
-        // クリックされたセルの位置を取得
         const cellIndex = target.cellIndex;
         const rowIndex = target.parentNode.rowIndex;
-
-        // テーブルの全行を取得
         const rows = document.querySelectorAll('#colorMap table tr');
 
-        // 周囲3x3セルの情報を表示するためのテーブル作成
         const infoTable = document.createElement('table');
         infoTable.style.border = '1px solid black';
         infoTable.style.marginTop = '10px';
 
         for (let i = rowIndex - 1; i <= rowIndex + 1; i++) {
-            if (i >= 1 && i < rows.length) { // 行の範囲チェック
+            if (i >= 1 && i < rows.length) {
                 const row = document.createElement('tr');
                 const cells = rows[i].children;
 
                 for (let j = cellIndex - 1; j <= cellIndex + 1; j++) {
-                    if (j >= 0 && j < cells.length) { // 列の範囲チェック
+                    if (j >= 0 && j < cells.length) {
                         const cell = document.createElement('td');
                         cell.textContent = cells[j].textContent;
                         cell.style.border = '1px solid black';
@@ -268,7 +233,6 @@ document.getElementById('colorMap').addEventListener('click', function(event) {
             }
         }
 
-        // 既存の詳細情報を削除してから新しい情報を追加
         const existingInfo = document.getElementById('cellInfo');
         if (existingInfo) {
             existingInfo.remove();
@@ -279,7 +243,6 @@ document.getElementById('colorMap').addEventListener('click', function(event) {
         infoDiv.innerHTML = '<h3>クリックしたセルの付近情報</h3>';
         infoDiv.appendChild(infoTable);
 
-        // カラーマップの下に表示
         document.body.appendChild(infoDiv);
     }
 });
