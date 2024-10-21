@@ -38,6 +38,8 @@ th, td {
 #colorMap {
     width: 100%;
     height: auto;
+    transform: scale(0.1); /* テーブルを縮小 */
+    transform-origin: top left; /* 縮小の起点を左上に設定 */
 }
 
 .fullscreen-table {
