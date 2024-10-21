@@ -279,7 +279,7 @@ function displaySurroundingValues(row, col) {
     }
 
     // 新しいウィンドウを開く
-    const newWindow = window.open('', '', 'width=400,height=300');
+    const newWindow = window.open('', '', 'width=400,height=400');
     newWindow.document.write('<html><head><title>周囲の数値</title></head><body>');
     newWindow.document.write('<h1>周囲の数値</h1>');
     
@@ -288,7 +288,7 @@ function displaySurroundingValues(row, col) {
     surroundingValues.forEach(row => {
         newWindow.document.write('<tr>');
         row.forEach(value => {
-            newWindow.document.write(`<td style="padding: 5px; text-align: center;">${value}</td>`);
+            newWindow.document.write(`<td style="padding: 3px; text-align: center;">${value}</td>`);
         });
         newWindow.document.write('</tr>');
     });
