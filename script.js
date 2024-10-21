@@ -236,7 +236,6 @@ document.getElementById('updateButton').addEventListener('click', function() {
     findTop3MinValueCells(); // カラーマップ更新後にトップ3の最小値のセルを強調表示
 });
 
-// クリックイベントを追加
 document.getElementById('colorMap').addEventListener('click', function(event) {
     const targetCell = event.target;
 
@@ -244,6 +243,8 @@ document.getElementById('colorMap').addEventListener('click', function(event) {
     if (targetCell.tagName === 'TD') {
         const row = targetCell.parentElement.rowIndex; // 行番号
         const col = targetCell.cellIndex; // 列番号
+
+        console.log(`Clicked Cell - Row: ${row}, Col: ${col}`); // デバッグ情報
 
         // 周囲の値を取得して新しいウィンドウに表示
         displaySurroundingValues(row, col);
@@ -268,6 +269,8 @@ function displaySurroundingValues(row, col) {
             }
         }
     }
+
+    console.log(`Surrounding Values: ${surroundingValues.join(', ')}`); // デバッグ情報
 
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=400,height=300');
