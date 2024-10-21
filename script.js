@@ -235,3 +235,45 @@ document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
     findTop3MinValueCells(); // カラーマップ更新後にトップ3の最小値のセルを強調表示
 });
+
+// クリックイベントを追加
+document.getElementById('colorMap').addEventListener('click', function(event) {
+    const targetCell = event.target;
+
+    // クリックしたセルが<td>要素か確認
+    if (targetCell.tagName === 'TD') {
+        const row = targetCell.parentElement.rowIndex; // 行番号
+        const col = targetCell.cellIndex; // 列番号
+
+        // 周囲の値を取得して新しいウィンドウに表示
+        displaySurroundingValues(row, col);
+    }
+});
+
+function displaySurroundingValues(row, col) {
+    if (!globalData) return;
+
+    const lines = globalData.split('\n');
+    const surroundingValues = [];
+
+    // 周囲のセルの範囲を指定（-1から1までの範囲）
+    for (let r = row - 1; r <= row + 1; r++) {
+        if (r < 1 || r >= lines.length) continue; // 行範囲のチェック
+        const rowData = lines[r].split(',');
+        for (let c = col - 1; c <= col + 1; c++) {
+            if (c < 0 || c >= rowData.length) continue; // 列範囲のチェック
+            const numericValue = parseFloat(rowData[c]);
+            if (!isNaN(numericValue)) {
+                surroundingValues.push(numericValue);
+            }
+        }
+    }
+
+    // 新しいウィンドウを開く
+    const newWindow = window.open('', '', 'width=400,height=300');
+    newWindow.document.write('<html><head><title>周囲の数値</title></head><body>');
+    newWindow.document.write('<h1>周囲の数値</h1>');
+    newWindow.document.write(`<p>${surroundingValues.join(', ')}</p>`);
+    newWindow.document.write('</body></html>');
+    newWindow.document.close(); // 新しいウィンドウの書き込みを終了
+}
