@@ -17,8 +17,8 @@ th, td {
 }
 
 .large-button {
-    font-size: 12px; /* 読みやすさを考慮してサイズを調整 */
-    padding: 5px 10px; /* ボタンの押しやすさを考慮 */
+    font-size: 11px; /* 読みやすさを考慮してサイズを調整 */
+    padding: 5px 9px; /* ボタンの押しやすさを考慮 */
     margin: 3px;
 }
 
