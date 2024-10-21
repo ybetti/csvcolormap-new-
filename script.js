@@ -262,6 +262,7 @@ function displaySurroundingValues(row, col) {
     const lines = globalData.split('\n');
     const surroundingValues = [];
     const surroundingColors = []; // 色を保持する配列
+    let minValue = Number.POSITIVE_INFINITY; // 最小値を初期化
 
     // 5×5の範囲を指定
     for (let r = row - 2; r <= row + 2; r++) {
@@ -280,6 +281,11 @@ function displaySurroundingValues(row, col) {
                 // 数値に基づいて色を取得
                 const color = isNaN(numericValue) ? 'white' : getColorForValue(numericValue, autoMinValue, autoMaxValue);
                 rowColors.push(color);
+
+                // 最小値を更新
+                if (!isNaN(numericValue) && numericValue < minValue) {
+                    minValue = numericValue;
+                }
             }
         }
         surroundingValues.push(rowValues);
@@ -289,8 +295,12 @@ function displaySurroundingValues(row, col) {
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=380,height=270');
 
-    // 5×5のテーブルを作成
-    newWindow.document.write('<table border="1" style="border-collapse: collapse;">');
+    // テーブルを作成
+    newWindow.document.write('<table border="1" style="border-collapse: collapse; width: 100%;">');
+
+    // 最小値を表示する行を追加
+    newWindow.document.write('<tr><td colspan="5" style="text-align: right;">最小値: ' + (minValue === Number.POSITIVE_INFINITY ? 'ND' : minValue) + '</td></tr>');
+
     surroundingValues.forEach((row, rowIndex) => {
         newWindow.document.write('<tr>');
         row.forEach((value, colIndex) => {
