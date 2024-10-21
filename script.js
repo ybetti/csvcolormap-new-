@@ -280,8 +280,6 @@ function displaySurroundingValues(row, col) {
 
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=400,height=400');
-    newWindow.document.write('<html><head><title>周囲の数値</title></head><body>');
-    newWindow.document.write('<h1>周囲の数値</h1>');
     
     // 5×5のテーブルを作成
     newWindow.document.write('<table border="1" style="border-collapse: collapse;">');
