@@ -25,6 +25,50 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
     table.style.transformOrigin = 'top left';
     colorMapContainer.style.overflow = 'auto';
     newWindow.document.close();
+
+    // 新しいウィンドウでセルクリックイベントを追加
+    table.addEventListener('click', function(event) {
+        const target = event.target;
+        if (target.tagName === 'TD') {
+            const cellIndex = target.cellIndex;
+            const rowIndex = target.parentNode.rowIndex;
+            const rows = table.querySelectorAll('tr');
+
+            const infoTable = newWindow.document.createElement('table');
+            infoTable.style.border = '1px solid black';
+            infoTable.style.marginTop = '10px';
+
+            for (let i = rowIndex - 1; i <= rowIndex + 1; i++) {
+                if (i >= 1 && i < rows.length) {
+                    const row = newWindow.document.createElement('tr');
+                    const cells = rows[i].children;
+
+                    for (let j = cellIndex - 1; j <= cellIndex + 1; j++) {
+                        if (j >= 0 && j < cells.length) {
+                            const cell = newWindow.document.createElement('td');
+                            cell.textContent = cells[j].textContent;
+                            cell.style.border = '1px solid black';
+                            cell.style.padding = '5px';
+                            row.appendChild(cell);
+                        }
+                    }
+                    infoTable.appendChild(row);
+                }
+            }
+
+            const existingInfo = newWindow.document.getElementById('cellInfo');
+            if (existingInfo) {
+                existingInfo.remove();
+            }
+
+            const infoDiv = newWindow.document.createElement('div');
+            infoDiv.id = 'cellInfo';
+            infoDiv.innerHTML = '<h3>クリックしたセルの付近情報</h3>';
+            infoDiv.appendChild(infoTable);
+
+            newWindow.document.body.appendChild(infoDiv);
+        }
+    });
 });
 
 document.getElementById('updateButton').addEventListener('click', function() {
@@ -189,60 +233,8 @@ function findTop3MinValueCells() {
         const row = tableRows[cellData.row];
         if (row) {
             const targetCell = row.children[cellData.col];
-            if (index === 0) {
-                targetCell.style.border = '15px solid black';
-                targetCell.style.backgroundColor = '#ffcccc';
-            } else if (index === 1) {
-                targetCell.style.border = '15px solid orange';
-                targetCell.style.backgroundColor = '#ffe5cc';
-            } else if (index === 2) {
-                targetCell.style.border = '15px solid purple';
-                targetCell.style.backgroundColor = '#ffffcc';
-            }
+            const colors = ['blue', 'green', 'red'];
+            targetCell.style.border = '10px solid ' + colors[index];
         }
     });
 }
-
-// セルクリック時に周囲の詳細情報を表示する機能を追加
-document.getElementById('colorMap').addEventListener('click', function(event) {
-    const target = event.target;
-    if (target.tagName === 'TD') {
-        const cellIndex = target.cellIndex;
-        const rowIndex = target.parentNode.rowIndex;
-        const rows = document.querySelectorAll('#colorMap table tr');
-
-        const infoTable = document.createElement('table');
-        infoTable.style.border = '1px solid black';
-        infoTable.style.marginTop = '10px';
-
-        for (let i = rowIndex - 1; i <= rowIndex + 1; i++) {
-            if (i >= 1 && i < rows.length) {
-                const row = document.createElement('tr');
-                const cells = rows[i].children;
-
-                for (let j = cellIndex - 1; j <= cellIndex + 1; j++) {
-                    if (j >= 0 && j < cells.length) {
-                        const cell = document.createElement('td');
-                        cell.textContent = cells[j].textContent;
-                        cell.style.border = '1px solid black';
-                        cell.style.padding = '5px';
-                        row.appendChild(cell);
-                    }
-                }
-                infoTable.appendChild(row);
-            }
-        }
-
-        const existingInfo = document.getElementById('cellInfo');
-        if (existingInfo) {
-            existingInfo.remove();
-        }
-
-        const infoDiv = document.createElement('div');
-        infoDiv.id = 'cellInfo';
-        infoDiv.innerHTML = '<h3>クリックしたセルの付近情報</h3>';
-        infoDiv.appendChild(infoTable);
-
-        document.body.appendChild(infoDiv);
-    }
-});
