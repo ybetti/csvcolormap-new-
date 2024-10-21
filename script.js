@@ -272,13 +272,13 @@ function displaySurroundingValues(row, col) {
         for (let c = col - 2; c <= col + 2; c++) {
             if (c < 0 || c >= rowData.length) {
                 rowValues.push('ND'); // 範囲外の場合は'ND'を表示
-                rowColors.push('transparent'); // 色を透明に設定
+                rowColors.push('white'); // NDの場合は白色
             } else {
                 const numericValue = parseFloat(rowData[c]);
                 rowValues.push(isNaN(numericValue) ? 'ND' : numericValue);
 
                 // 数値に基づいて色を取得
-                const color = getColorForValue(numericValue, autoMinValue, autoMaxValue);
+                const color = isNaN(numericValue) ? 'white' : getColorForValue(numericValue, autoMinValue, autoMaxValue);
                 rowColors.push(color);
             }
         }
