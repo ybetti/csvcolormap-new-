@@ -262,26 +262,35 @@ function displaySurroundingValues(row, col) {
     const lines = globalData.split('\n');
     const surroundingValues = [];
 
-    // 周囲のセルの範囲を指定（-1から1までの範囲）
-    for (let r = row - 1; r <= row + 1; r++) {
+    // 周囲のセルの範囲を指定（-2から2までの範囲）
+    for (let r = row - 2; r <= row + 2; r++) {
         if (r < 1 || r >= lines.length) continue; // 行範囲のチェック
         const rowData = lines[r].split(',');
-        for (let c = col - 1; c <= col + 1; c++) {
+        for (let c = col - 2; c <= col + 2; c++) {
             if (c < 0 || c >= rowData.length) continue; // 列範囲のチェック
             const numericValue = parseFloat(rowData[c]);
+            const cellBackgroundColor = document.querySelector(`#colorMap table tr:nth-child(${r + 1}) td:nth-child(${c + 1})`).style.backgroundColor;
+
             if (!isNaN(numericValue)) {
-                surroundingValues.push(numericValue);
+                surroundingValues.push({
+                    value: numericValue,
+                    backgroundColor: cellBackgroundColor
+                });
             }
         }
     }
 
-    console.log(`Surrounding Values: ${surroundingValues.join(', ')}`); // デバッグ情報
+    console.log(`Surrounding Values: ${surroundingValues.map(val => val.value).join(', ')}`); // デバッグ情報
 
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=400,height=300');
     newWindow.document.write('<html><head><title>周囲の数値</title></head><body>');
     newWindow.document.write('<h1>周囲の数値</h1>');
-    newWindow.document.write(`<p>${surroundingValues.join(', ')}</p>`);
+
+    surroundingValues.forEach(({ value, backgroundColor }) => {
+        newWindow.document.write(`<div style="background-color: ${backgroundColor}; padding: 5px;">${value}</div>`);
+    });
+
     newWindow.document.write('</body></html>');
     newWindow.document.close(); // 新しいウィンドウの書き込みを終了
 }
