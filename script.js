@@ -261,37 +261,46 @@ function displaySurroundingValues(row, col) {
 
     const lines = globalData.split('\n');
     const surroundingValues = [];
+    const surroundingColors = []; // 色を保持する配列
 
     // 5×5の範囲を指定
     for (let r = row - 2; r <= row + 2; r++) {
         if (r < 1 || r >= lines.length) continue; // 行範囲のチェック
         const rowData = lines[r].split(',');
         const rowValues = [];
+        const rowColors = []; // 色の配列
         for (let c = col - 2; c <= col + 2; c++) {
             if (c < 0 || c >= rowData.length) {
                 rowValues.push('ND'); // 範囲外の場合は'ND'を表示
+                rowColors.push('transparent'); // 色を透明に設定
             } else {
                 const numericValue = parseFloat(rowData[c]);
                 rowValues.push(isNaN(numericValue) ? 'ND' : numericValue);
+
+                // 数値に基づいて色を取得
+                const color = getColorForValue(numericValue, autoMinValue, autoMaxValue);
+                rowColors.push(color);
             }
         }
         surroundingValues.push(rowValues);
+        surroundingColors.push(rowColors); // 色も追加
     }
 
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=380,height=270');
-    
+
     // 5×5のテーブルを作成
     newWindow.document.write('<table border="1" style="border-collapse: collapse;">');
-    surroundingValues.forEach(row => {
+    surroundingValues.forEach((row, rowIndex) => {
         newWindow.document.write('<tr>');
-        row.forEach(value => {
-            newWindow.document.write(`<td style="padding: 3px; text-align: center;">${value}</td>`);
+        row.forEach((value, colIndex) => {
+            const color = surroundingColors[rowIndex][colIndex]; // 対応する色を取得
+            newWindow.document.write(`<td style="padding: 3px; text-align: center; background-color: ${color};">${value}</td>`);
         });
         newWindow.document.write('</tr>');
     });
     newWindow.document.write('</table>');
-    
+
     newWindow.document.write('</body></html>');
     newWindow.document.close(); // 新しいウィンドウの書き込みを終了
 }
