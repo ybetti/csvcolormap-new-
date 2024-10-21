@@ -279,7 +279,7 @@ function displaySurroundingValues(row, col) {
     }
 
     // 新しいウィンドウを開く
-    const newWindow = window.open('', '', 'width=400,height=270');
+    const newWindow = window.open('', '', 'width=380,height=270');
     
     // 5×5のテーブルを作成
     newWindow.document.write('<table border="1" style="border-collapse: collapse;">');
