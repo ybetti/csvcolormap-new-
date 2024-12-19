@@ -14,6 +14,21 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     };
 });
 
+transposeButton.addEventListener("click", () => {
+            csvData = transpose(csvData); // データを転置
+            renderTable(csvData); // テーブルを再描画
+        });
+
+        // CSVの文字列を2D配列に変換
+        function parseCSV(text) {
+            return text.split("\n").map(row => row.split(","));
+        }
+
+        // 2D配列を転置
+        function transpose(data) {
+            return data[0].map((_, colIndex) => data.map(row => row[colIndex]));
+        }
+
 document.getElementById('fullscreenButton').addEventListener('click', function() {
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=800,height=600');
