@@ -114,7 +114,6 @@ function updateColorMap() {
     table.style.transformOrigin = 'top left';
 }
 
-
 function getColorForValue(value, min, max) {
     const ranges = [
         parseFloat(document.getElementById('range1').value),
