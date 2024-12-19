@@ -14,21 +14,6 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     };
 });
 
-transposeButton.addEventListener("click", () => {
-            csvData = transpose(csvData); // データを転置
-            renderTable(csvData); // テーブルを再描画
-        });
-
-        // CSVの文字列を2D配列に変換
-        function parseCSV(text) {
-            return text.split("\n").map(row => row.split(","));
-        }
-
-        // 2D配列を転置
-        function transpose(data) {
-            return data[0].map((_, colIndex) => data.map(row => row[colIndex]));
-        }
-
 document.getElementById('fullscreenButton').addEventListener('click', function() {
     // 新しいウィンドウを開く
     const newWindow = window.open('', '', 'width=800,height=600');
@@ -269,18 +254,6 @@ document.getElementById('colorMap').addEventListener('click', function(event) {
         // 周囲の値を取得して新しいウィンドウに表示
         displaySurroundingValues(row, col);
     }
-});
-
-document.getElementById("transposeButton").addEventListener("click", () => {
-    if (!globalData) return;
-
-    // CSVデータを解析して転置
-    const csvArray = parseCSV(globalData);
-    const transposedArray = transpose(csvArray);
-
-    // 転置されたデータを再レンダリング
-    globalData = transposedArray.map(row => row.join(",")).join("\n");
-    updateColorMap(); // 転置後にカラーマップを更新
 });
 
 function displaySurroundingValues(row, col) {
