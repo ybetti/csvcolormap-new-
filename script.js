@@ -272,31 +272,16 @@ document.getElementById('colorMap').addEventListener('click', function(event) {
 });
 
 document.getElementById("transposeButton").addEventListener("click", () => {
-    // テーブルデータを取得
-    const table = document.getElementById("colorMap");
-    const rows = Array.from(table.rows); // HTMLCollection を配列に変換
+    if (!globalData) return;
 
-    // 現在のデータを 2D 配列に変換
-    const data = rows.map(row => Array.from(row.cells).map(cell => cell.innerHTML));
+    // CSVデータを解析して転置
+    const csvArray = parseCSV(globalData);
+    const transposedArray = transpose(csvArray);
 
-    // 行列を入れ替える
-    const transposedData = data[0].map((_, colIndex) => data.map(row => row[colIndex]));
-
-    // テーブルの内容を更新
-    while (table.firstChild) {
-        table.removeChild(table.firstChild); // 既存の行を削除
-    }
-
-    // 新しい行を生成して追加
-    transposedData.forEach(rowData => {
-        const newRow = table.insertRow();
-        rowData.forEach(cellData => {
-            const newCell = newRow.insertCell();
-            newCell.innerHTML = cellData; // データをセット
-        });
-    });
+    // 転置されたデータを再レンダリング
+    globalData = transposedArray.map(row => row.join(",")).join("\n");
+    updateColorMap(); // 転置後にカラーマップを更新
 });
-
 
 function displaySurroundingValues(row, col) {
     if (!globalData) return;
